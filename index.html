@@ -1,0 +1,4251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zentry Company - Dominando la IA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #050508;
+            --bg-card: rgba(12, 12, 18, 0.75);
+            --primary: #d4af37; /* Satin Gold */
+            --secondary: #ffd700; /* Bright Gold */
+            --accent: #ffd700;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border: rgba(212, 175, 55, 0.15);
+            --border-hover: rgba(255, 215, 0, 0.4);
+            --gold-glow: rgba(212, 175, 55, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Dynamic AI Background Canvas */
+        #ai-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+
+        /* Fondo con efectos de resplandor dorado */
+        .neon-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.05;
+        }
+
+        .blob-1 { top: -10%; left: -10%; background: var(--primary); }
+        .blob-2 { bottom: -10%; right: -10%; background: var(--secondary); }
+        .blob-3 { top: 40%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; background: var(--primary); opacity: 0.03; }
+
+        /* Navegación */
+        header {
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 8, 0.85);
+            transition: background 0.3s, border 0.3s;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.15));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.04);
+        }
+
+        nav ul { display: flex; list-style: none; gap: 30px; align-items: center; }
+        nav a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 15px; transition: color 0.3s; }
+        nav a:hover { color: var(--secondary); }
+
+        .btn-nav {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--primary);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-nav:hover { 
+            background: var(--primary); 
+            color: var(--bg-main); 
+            transform: translateY(-2px); 
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); 
+        }
+
+        /* Hero Scroll-linked Section */
+        .hero-scroll-track {
+            height: 200vh; /* Pinned area for scroll animation */
+            position: relative;
+            background: var(--bg-main);
+        }
+
+        .hero-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Luxury Office Background */
+        .luxury-office-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-color: var(--bg-main);
+        }
+
+        .luxury-office-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8);
+        }
+
+        .luxury-office-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(5, 5, 8, 0.1) 0%, rgba(5, 5, 8, 0.75) 85%),
+                        linear-gradient(to bottom, rgba(5, 5, 8, 0.3), var(--bg-main));
+            z-index: 2;
+        }
+
+        /* Sliding Transparent Glass Doors */
+        .doors-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .door {
+            width: 50%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.015);
+            backdrop-filter: blur(2px) saturate(100%);
+            -webkit-backdrop-filter: blur(2px) saturate(100%);
+            display: flex;
+            align-items: center;
+            position: relative;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            will-change: transform;
+        }
+
+        .door-left {
+            border-right: 2px solid var(--primary);
+            justify-content: flex-end;
+            border-left: none;
+        }
+
+        .door-right {
+            border-left: 2px solid var(--primary);
+            justify-content: flex-start;
+            border-right: none;
+        }
+
+        /* Modular luxury pattern inside the glass doors */
+        .door-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            pointer-events: none;
+        }
+
+        .door-grid-cell {
+            border: 1px solid rgba(212, 175, 55, 0.04);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Door Handles */
+        .handle {
+            width: 16px;
+            height: 160px;
+            background: linear-gradient(180deg, #ffe89e 0%, var(--primary) 50%, #8c6d13 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), 0 10px 20px rgba(0,0,0,0.5);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+
+        .door-left .handle {
+            right: 15px;
+        }
+
+        .door-right .handle {
+            left: 15px;
+        }
+
+        /* Glass Door Reflection Overlay */
+        .door::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.04) 100%);
+            pointer-events: none;
+        }
+
+        /* Hero Content (Inside the Office) */
+        .hero-content {
+            position: absolute;
+            z-index: 3;
+            text-align: center;
+            max-width: 850px;
+            padding: 0 24px;
+            opacity: 0;
+            transform: scale(0.92);
+            pointer-events: none;
+            transition: opacity 0.1s linear, transform 0.1s linear;
+        }
+
+        .hero-tag {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--secondary);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-block;
+            margin-bottom: 25px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+        }
+
+        .hero-content h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 68px;
+            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .hero-content h1 .gradient-text {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .hero-content p { 
+            font-size: 20px; 
+            color: var(--text-muted); 
+            max-width: 700px; 
+            margin: 0 auto 40px auto;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Contenedor Común */
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 100px 24px; 
+        }
+
+        /* 3D Perspective Wrapper for scroll transitions */
+        .container-3d-wrapper {
+            perspective: 1500px;
+            overflow: visible;
+            position: relative;
+            z-index: 10;
+        }
+
+        .container-3d-content {
+            transform-style: preserve-3d;
+            transform: rotateX(20deg) translateY(80px) translateZ(-200px) scale(0.88);
+            opacity: 0.3;
+            transform-origin: top center;
+            will-change: transform, opacity;
+        }
+
+        .section-header { 
+            text-align: center; 
+            margin-bottom: 70px; 
+            position: relative;
+        }
+
+        .section-header h2, .section-header p {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header-spiral-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 120%;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.65;
+        }
+
+        .section-header h2 { 
+            font-family: 'Space Grotesk', sans-serif; 
+            font-size: 46px; 
+            text-transform: uppercase; 
+            margin-bottom: 15px; 
+            letter-spacing: -0.5px;
+        }
+
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .section-header h2 span {
+            background: linear-gradient(
+                to right,
+                var(--secondary) 0%,
+                var(--primary) 25%,
+                #ffffff 50%,
+                var(--primary) 75%,
+                var(--secondary) 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 5s linear infinite;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+        }
+
+        .section-header p { 
+            color: var(--text-muted); 
+            font-size: 19px; 
+            max-width: 650px; 
+            margin: 0 auto; 
+        }
+
+        /* Metodología Cards */
+        #herramientas-header {
+            position: relative;
+            padding-top: 150px;
+        }
+
+        #robot-laser-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #herramientas-header h2, #herramientas-header p {
+            position: relative;
+            z-index: 2;
+        }
+
+        .laser-word {
+            display: inline-block;
+            opacity: 0;
+            transform: scale(0.65);
+            transition: opacity 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #ffffff;
+            will-change: opacity, transform;
+            white-space: pre-wrap;
+            margin-right: 4px;
+        }
+
+        .laser-word.active {
+            opacity: 1;
+            transform: scale(1);
+            animation: wordFlash 0.6s ease-out;
+        }
+
+        .laser-word.highlight-word {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        @keyframes wordFlash {
+            0% {
+                color: #00f2ff;
+                -webkit-text-fill-color: #00f2ff;
+                text-shadow: 0 0 20px #00f2ff, 0 0 40px #00f2ff;
+                transform: scale(0.65);
+            }
+            100% {
+                text-shadow: none;
+            }
+        }
+
+        .grid-metodologia { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 30px; 
+        }
+
+        .card-metodologia {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 45px 35px;
+            border-radius: 24px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.1s ease-out;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Mouse tracking spotlight card background glow */
+        .card-metodologia::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(212, 175, 55, 0.09),
+                transparent 80%
+            );
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .card-metodologia:hover::before {
+            opacity: 1;
+        }
+
+        /* Ensure card contents stay on top of the spotlight glow and have depth */
+        .card-metodologia > * {
+            position: relative;
+            z-index: 1;
+            transform: translateZ(30px);
+        }
+
+        .card-metodologia .icon-box {
+            width: 80px; 
+            height: 80px; 
+            background: rgba(212, 175, 55, 0.06);
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin: 0 auto 25px auto; 
+            font-size: 32px; 
+            color: var(--secondary); 
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        }
+
+        /* Interactive Icon Hover Animations */
+        @keyframes pulseBrain {
+            0% { transform: scale(1) translateZ(30px); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4)); }
+            50% { transform: scale(1.1) translateZ(50px); filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)); }
+            100% { transform: scale(1) translateZ(30px); filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.4)); }
+        }
+        .card-metodologia:hover .fa-brain {
+            animation: pulseBrain 1.8s infinite ease-in-out;
+        }
+
+        @keyframes spinGears {
+            0% { transform: rotate(0deg) translateZ(30px); }
+            100% { transform: rotate(360deg) translateZ(30px); }
+        }
+        .card-metodologia:hover .fa-gears {
+            animation: spinGears 4s infinite linear;
+        }
+
+        @keyframes wiggleRocket {
+            0% { transform: translate(0, 0) translateZ(30px) rotate(0deg); }
+            15% { transform: translate(-2px, -2px) translateZ(40px) rotate(-3deg); }
+            30% { transform: translate(1px, -4px) translateZ(45px) rotate(2deg); }
+            45% { transform: translate(-1px, -6px) translateZ(50px) rotate(-2deg); }
+            60% { transform: translate(2px, -8px) translateZ(55px) rotate(3deg); }
+            75% { transform: translate(-2px, -4px) translateZ(45px) rotate(-1deg); }
+            90% { transform: translate(1px, -2px) translateZ(35px) rotate(1deg); }
+            100% { transform: translate(0, 0) translateZ(30px) rotate(0deg); }
+        }
+        .card-metodologia:hover .fa-rocket {
+            animation: wiggleRocket 1.2s infinite ease-in-out;
+            color: #ffaa00;
+            text-shadow: 0 5px 15px rgba(255, 170, 0, 0.6);
+        }
+
+        .card-metodologia h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-metodologia p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        /* Ecosistema de Herramientas */
+        .tool-showcase { 
+            background: linear-gradient(180deg, rgba(12, 12, 18, 0.8) 0%, rgba(5, 5, 8, 0.1) 100%); 
+            border: 1px solid var(--border); 
+            border-radius: 32px; 
+            padding: 70px; 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .tool-row { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 70px; 
+            align-items: center; 
+            margin-bottom: 90px; 
+        }
+
+        .tool-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .tool-row.reverse { 
+            direction: rtl; 
+        }
+
+        .tool-row.reverse .tool-info { 
+            direction: ltr; 
+        }
+
+        .tool-info h3 { 
+            font-family: 'Space Grotesk', sans-serif; 
+            font-size: 38px; 
+            text-transform: uppercase; 
+            margin-bottom: 18px; 
+            letter-spacing: -0.5px;
+        }
+
+        .tool-info h3 span { 
+            font-size: 13px; 
+            background: linear-gradient(135deg, var(--secondary), #b8860b);
+            color: var(--bg-main);
+            padding: 4px 14px; 
+            border-radius: 50px; 
+            font-weight: 700;
+            margin-left: 10px;
+            vertical-align: middle;
+            text-shadow: none;
+            letter-spacing: 1px;
+        }
+
+        .tool-info p { 
+            color: var(--text-muted); 
+            font-size: 17px; 
+            margin-bottom: 30px; 
+        }
+
+        .tool-features { 
+            list-style: none; 
+        }
+
+        .tool-features li { 
+            margin-bottom: 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            font-size: 16px; 
+        }
+
+        .tool-features i { 
+            color: var(--secondary); 
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); 
+        }
+
+        /* Estilización de Visual Mockups */
+        .tool-visual { 
+            background: #09090e; 
+            border: 2px solid rgba(212, 175, 55, 0.15); 
+            border-radius: 24px; 
+            height: 380px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .tool-visual::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: var(--primary);
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        /* Cyberpunk 3D Phone Mockup Flipper */
+        .nexlink-phone-container {
+            width: 230px;
+            height: 325px;
+            perspective: 1200px;
+            z-index: 2;
+            position: relative;
+            margin-top: -15px;
+        }
+
+        .phone-flipper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .phone-flipper.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .phone-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 24px;
+            border: 3px solid #1a1a24;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #06060a;
+        }
+
+        /* Front Face: NexLink Landing Page */
+        .phone-front {
+            border-color: rgba(0, 242, 255, 0.35);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15), inset 0 0 15px rgba(0, 242, 255, 0.05);
+        }
+
+        .phone-front::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(0,242,255,0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Back Face: User Profile */
+        .phone-back {
+            transform: rotateY(180deg);
+            border-color: rgba(217, 70, 239, 0.35);
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.15), inset 0 0 15px rgba(217, 70, 239, 0.05);
+        }
+
+        .phone-back::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(217,70,239,0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Phone notch */
+        .phone-notch {
+            width: 80px;
+            height: 12px;
+            background: #1a1a24;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            margin: 0 auto;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        /* Content inside Front Panel (Landing Page) */
+        .front-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 14px;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .front-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #00f2ff;
+            text-shadow: 0 0 10px rgba(0,242,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 5px;
+        }
+
+        .front-logo i {
+            font-size: 13px;
+        }
+
+        .front-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #ffffff;
+        }
+
+        .front-title span {
+            background: linear-gradient(to right, #00f2ff, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+        }
+
+        .front-sub {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .front-btn {
+            background: linear-gradient(135deg, #00f2ff 0%, #d946ef 100%);
+            color: #050508;
+            font-weight: 700;
+            font-size: 10.5px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
+            border: none;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: all 0.3s;
+            animation: pulseBtn 2s infinite;
+        }
+
+        @keyframes pulseBtn {
+            0% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+            50% { box-shadow: 0 0 18px rgba(217, 70, 239, 0.6); }
+            100% { box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
+        }
+
+        .front-features {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .front-feat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            border-radius: 10px;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .front-feat-card i {
+            font-size: 11px;
+            color: #00f2ff;
+        }
+
+        .front-feat-card span {
+            font-size: 9px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        /* Content inside Back Panel (User Profile) */
+        .back-banner {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(135deg, #100e17 0%, #201a30 50%, #151025 100%);
+            position: relative;
+            border-bottom: 1px solid rgba(217, 70, 239, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .back-banner::before {
+            content: 'CREACIÓN DE AVATAR & VIDEO';
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 8px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.12);
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+
+        .back-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 14px 14px 14px;
+            margin-top: -20px;
+            text-align: center;
+            gap: 8px;
+            z-index: 2;
+        }
+
+        .back-avatar-container {
+            position: relative;
+        }
+
+        .back-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #d946ef;
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+            background: #0d0d12;
+            object-fit: cover;
+        }
+
+        .back-handle {
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            margin-top: -2px;
+        }
+
+        .back-bio {
+            font-size: 8px;
+            color: var(--text-muted);
+            line-height: 1.3;
+            max-width: 180px;
+        }
+
+        .back-socials {
+            display: flex;
+            gap: 10px;
+            margin: 2px 0;
+        }
+
+        .back-socials i {
+            font-size: 11px;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .back-socials i:hover {
+            color: #d946ef;
+        }
+
+        .back-links {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+        }
+
+        .back-link-btn {
+            background: rgba(13, 13, 18, 0.8);
+            border: 1px solid rgba(217, 70, 239, 0.25);
+            border-radius: 50px;
+            padding: 7px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-link-btn:hover {
+            transform: scale(1.03);
+            border-color: #d946ef;
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3);
+            background: rgba(217, 70, 239, 0.05);
+        }
+
+        .back-link-btn.link-whatsapp {
+            border-color: rgba(0, 242, 255, 0.25);
+        }
+
+        .back-link-btn.link-whatsapp:hover {
+            border-color: #00f2ff;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        .back-link-btn i {
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .back-link-btn.link-whatsapp i {
+            color: #25d366;
+            background: rgba(37, 211, 102, 0.1);
+        }
+
+        .back-link-btn i.fa-graduation-cap {
+            color: #d946ef;
+            background: rgba(217, 70, 239, 0.1);
+        }
+
+        .back-link-btn span {
+            font-size: 8.5px;
+            font-weight: 600;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        /* Custom Toggle Switch under the phone mockup */
+        .phone-toggle {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: rgba(12, 12, 18, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            padding: 3px;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        .toggle-btn {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 5px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            color: #050508;
+            background: #00f2ff;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+        }
+
+        .toggle-btn.active.profile-active {
+            background: #d946ef;
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+        }
+
+        /* Link Shop 3D Phone Mockup Flipper */
+        .shop-phone-container {
+            width: 230px;
+            height: 325px;
+            perspective: 1200px;
+            z-index: 2;
+            position: relative;
+            margin-top: -15px;
+        }
+
+        .shop-phone-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 24px;
+            border: 3px solid #1a1a24;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #06060a;
+        }
+
+        .phone-face.shop-front {
+            border-color: rgba(0, 242, 255, 0.35);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15), inset 0 0 15px rgba(0, 242, 255, 0.05);
+        }
+
+        .phone-face.shop-back {
+            transform: rotateY(180deg);
+            border-color: rgba(188, 0, 221, 0.35);
+            box-shadow: 0 0 20px rgba(188, 0, 221, 0.15), inset 0 0 15px rgba(188, 0, 221, 0.05);
+        }
+
+        /* Front Content: LinkShop Landing Page (Image 1) */
+        .shop-front-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: #00f2ff;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 2px;
+        }
+
+        .shop-front-logo i {
+            font-size: 12px;
+        }
+
+        .shop-front-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .shop-front-title span {
+            color: #00f2ff;
+            text-shadow: 0 0 8px rgba(0, 242, 255, 0.3);
+        }
+
+        .shop-front-sub {
+            font-size: 9px;
+            color: var(--text-muted);
+            line-height: 1.35;
+        }
+
+        .shop-front-btn {
+            background: #00f2ff;
+            color: #050508;
+            font-weight: 700;
+            font-size: 10px;
+            padding: 8px 14px;
+            border-radius: 50px;
+            box-shadow: 0 0 12px rgba(0, 242, 255, 0.35);
+            border: none;
+            cursor: pointer;
+            margin-top: 2px;
+            animation: pulseBtnCian 2.5s infinite;
+        }
+
+        @keyframes pulseBtnCian {
+            0% { box-shadow: 0 0 8px rgba(0, 242, 255, 0.3); }
+            50% { box-shadow: 0 0 16px rgba(0, 242, 255, 0.75); }
+            100% { box-shadow: 0 0 8px rgba(0, 242, 255, 0.3); }
+        }
+
+        .shop-front-feats {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+        }
+
+        .shop-front-feat {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 242, 255, 0.08);
+            border-radius: 8px;
+            padding: 5px 8px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            text-align: left;
+        }
+
+        .shop-front-feat i {
+            font-size: 10px;
+            color: #00f2ff;
+        }
+
+        .shop-front-feat span {
+            font-size: 8px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        /* Back Content: User Store (Image 2) */
+        .shop-back-banner {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to bottom, #d946ef, #100e17);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            opacity: 0.85;
+        }
+
+        .shop-back-banner::before {
+            content: 'IA & MARKETING';
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(217, 70, 239, 0.8);
+        }
+
+        .shop-back-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 12px 12px 12px;
+            margin-top: -16px;
+            text-align: center;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .shop-back-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid #d946ef;
+            box-shadow: 0 0 8px rgba(217, 70, 239, 0.4);
+            background: #0d0d12;
+            object-fit: cover;
+        }
+
+        .shop-back-handle {
+            font-size: 10px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: -2px;
+        }
+
+        .shop-back-desc {
+            font-size: 7.5px;
+            color: var(--text-muted);
+            line-height: 1.3;
+            max-width: 190px;
+        }
+
+        .shop-grid-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 100%;
+            margin-top: 3px;
+        }
+
+        .shop-item-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1.5px solid rgba(217, 70, 239, 0.15);
+            border-radius: 8px;
+            padding: 5px 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .shop-item-card .item-thumb {
+            width: 100%;
+            height: 25px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(217, 70, 239, 0.1), rgba(0, 242, 255, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6px;
+            font-weight: 700;
+            color: #ffffff;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        .shop-item-card h4 {
+            font-size: 7px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .shop-item-card .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 2px;
+        }
+
+        .shop-item-card .price {
+            font-size: 7px;
+            font-weight: 700;
+            color: #ccff00;
+        }
+
+        .shop-item-card .buy-btn {
+            background: #d946ef;
+            color: #ffffff;
+            font-size: 6px;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .shop-back-whatsapp-btn {
+            background: #4f46e5;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 700;
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .shop-back-whatsapp-btn:hover {
+            background: #6366f1;
+            box-shadow: 0 0 12px rgba(79, 70, 229, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* Web Builder Desktop Mockup Flipper */
+        .builder-desktop-container {
+            width: 380px;
+            height: 270px;
+            perspective: 1200px;
+            z-index: 2;
+            position: relative;
+            margin-top: -15px;
+        }
+
+        .builder-flipper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .builder-flipper.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .builder-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 16px;
+            border: 3px solid #1a1a24;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background: #020204;
+        }
+
+        .builder-face.desk-front {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+
+        .builder-face.desk-back {
+            transform: rotateY(180deg);
+            border-color: rgba(0, 242, 255, 0.35);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15);
+        }
+
+        .circle-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Window Header bar */
+        .desk-header-bar {
+            height: 28px;
+            background: #0d0d12;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            gap: 6px;
+            position: relative;
+        }
+
+        .desk-title-bar {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8.5px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* Front Content: Platform Dashboard (Image 3) */
+        .desk-front-body {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background: radial-gradient(circle at center, rgba(12,12,18,0.9) 0%, #06060a 100%);
+            gap: 10px;
+        }
+
+        .dashboard-logo-sec {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .dashboard-logo-sec .logo-z {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 26px;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.35);
+            line-height: 1;
+        }
+
+        .dashboard-logo-sec h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .dashboard-logo-sec span {
+            font-size: 8px;
+            font-weight: 700;
+            color: #00f2ff;
+            letter-spacing: 1px;
+        }
+
+        .dashboard-widgets-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        .widget-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 4px;
+            text-align: left;
+        }
+
+        .widget-box h5 {
+            font-size: 7px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .widget-box .widget-val {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .widget-box.widget-hosting {
+            border-color: rgba(212, 175, 55, 0.15);
+            background: rgba(212, 175, 55, 0.01);
+        }
+
+        .widget-box.widget-hosting .widget-val {
+            color: #d4af37;
+        }
+
+        .widget-chart-svg {
+            width: 100%;
+            height: 25px;
+            margin-top: 2px;
+        }
+
+        .widget-stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 6.5px;
+            color: var(--text-muted);
+        }
+
+        .widget-stats-list div {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .widget-stats-list span {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* Back Content: Page Visual Builder Dashboard (Image 4) */
+        .desk-back-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            background: #050508;
+        }
+
+        .builder-sidebar {
+            width: 60px;
+            background: #0c0c10;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-item-mini {
+            height: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            gap: 4px;
+            font-size: 6px;
+            color: var(--text-muted);
+        }
+
+        .sidebar-item-mini.active {
+            background: rgba(0, 242, 255, 0.08);
+            color: #00f2ff;
+        }
+
+        .sidebar-item-mini i {
+            font-size: 6px;
+        }
+
+        .builder-workspace {
+            flex: 1;
+            display: flex;
+            padding: 10px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .builder-editor-panel {
+            flex: 1.2;
+            height: 100%;
+            background: #0c0c10;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .builder-editor-panel h5 {
+            font-size: 7px;
+            font-weight: 700;
+            color: #ffffff;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 3px;
+        }
+
+        .builder-editor-panel fieldset, .builder-editor-field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .builder-editor-field label {
+            font-size: 6px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .builder-editor-field input {
+            background: #06060a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px;
+            padding: 3px 5px;
+            font-size: 6.5px;
+            color: #ffffff;
+            font-family: monospace;
+            outline: none;
+        }
+
+        .builder-color-circles {
+            display: flex;
+            gap: 4px;
+            margin-top: 1px;
+        }
+
+        .color-dot-mini {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+        }
+
+        .builder-preview-panel {
+            flex: 1;
+            height: 100%;
+            background: #0c0c10;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .preview-phone-mini {
+            width: 65px;
+            height: 95%;
+            background: #15101a;
+            border: 2px solid #2a2235;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6px 4px;
+            gap: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .preview-phone-mini h6 {
+            font-size: 5px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        .preview-phone-card-content {
+            background: #ffffff;
+            border-radius: 4px;
+            width: 100%;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            gap: 2px;
+            text-align: center;
+        }
+
+        .preview-phone-card-content h7 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 6px;
+            font-weight: 700;
+            color: #900000;
+        }
+
+        .preview-phone-card-content p {
+            font-size: 4px;
+            color: #333333;
+            line-height: 1.2;
+        }
+
+        /* Tabla de Membresías */
+        .pricing-table-wrapper { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            border-radius: 32px; 
+            overflow: hidden; 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.7); 
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            text-align: left; 
+        }
+
+        th, td { 
+            padding: 24px 30px; 
+            border-bottom: 1px solid rgba(212, 175, 55, 0.08); 
+        }
+
+        th { 
+            background: rgba(8, 8, 12, 0.95); 
+            font-family: 'Space Grotesk', sans-serif; 
+            font-size: 20px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+
+        th.plan-standard { 
+            color: var(--text-muted); 
+        }
+
+        th.plan-vip { 
+            color: var(--secondary); 
+            background: rgba(212, 175, 55, 0.04); 
+            border-left: 2px solid var(--primary); 
+            border-right: 2px solid var(--primary); 
+            border-top: 2px solid var(--primary);
+            position: relative;
+        }
+        
+        th.plan-vip i {
+            margin-right: 8px;
+            color: var(--secondary);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        td.plan-vip-cell { 
+            background: rgba(212, 175, 55, 0.015); 
+            border-left: 2px solid rgba(212, 175, 55, 0.2); 
+            border-right: 2px solid rgba(212, 175, 55, 0.2); 
+        }
+        
+        tr:last-child td.plan-vip-cell {
+            border-bottom: 2px solid var(--primary);
+        }
+
+        td i.fa-check { 
+            color: var(--secondary); 
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); 
+            font-size: 20px; 
+        }
+
+        td i.fa-xmark { 
+            color: #ef4444; 
+            font-size: 19px; 
+            opacity: 0.6;
+        }
+
+        .vip-badge-cell { 
+            color: var(--secondary); 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        
+        .vip-badge-cell i {
+            color: var(--primary);
+        }
+
+        /* Secciones de Conversión Directa */
+        .cta-section { 
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(5, 5, 8, 0.95) 100%); 
+            border: 1px solid var(--primary); 
+            border-radius: 32px; 
+            padding: 90px 40px; 
+            text-align: center; 
+            margin-top: 60px; 
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.05);
+        }
+
+        .cta-section h2 { 
+            font-family: 'Space Grotesk', sans-serif; 
+            font-size: 58px; 
+            text-transform: uppercase; 
+            margin-bottom: 20px; 
+            letter-spacing: -1px;
+            color: #ffffff;
+        }
+        
+        .cta-section p {
+            color: var(--text-muted);
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%); 
+            color: var(--bg-main); 
+            padding: 16px 40px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            cursor: pointer; 
+            box-shadow: 0 6px 25px rgba(212, 175, 55, 0.3); 
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1); 
+        }
+
+        .btn-primary:hover { 
+            box-shadow: 0 0 35px var(--secondary); 
+            transform: translateY(-3px); 
+            background: linear-gradient(135deg, #ffffff 0%, var(--secondary) 100%);
+        }
+
+        footer { 
+            border-top: 1px solid var(--border); 
+            padding: 40px 20px; 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 14px; 
+            margin-top: 100px; 
+            background: rgba(3, 3, 5, 0.9);
+        }
+
+        /* SECCIÓN CURSO EN VIVO */
+        #curso-vivo {
+            position: relative;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1.5px solid rgba(0, 242, 255, 0.45);
+            border-radius: 28px;
+            padding: 60px 40px;
+            overflow: hidden;
+            box-shadow: 0 0 35px rgba(0, 242, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 10;
+        }
+
+        #galaxy-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .glow-blob {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glow-purple {
+            top: -50px;
+            left: -50px;
+            background: #bc00dd;
+        }
+
+        .glow-cian {
+            bottom: -50px;
+            right: -50px;
+            background: #00f2ff;
+        }
+
+        .curso-vivo-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .curso-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .glow-text-cian {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 38px;
+            font-weight: 700;
+            color: #00f2ff;
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .glow-text-purple {
+            font-size: 19px;
+            font-weight: 600;
+            color: #d946ef;
+            text-shadow: 0 0 15px rgba(217, 70, 239, 0.5);
+        }
+
+        .grid-curso {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card-curso {
+            background: rgba(5, 5, 8, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .card-curso:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 242, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 242, 255, 0.1);
+            background: rgba(5, 5, 8, 0.85);
+        }
+
+        .icon-box-curso {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-purple {
+            color: #d946ef;
+            background: rgba(217, 70, 239, 0.1);
+            border-color: rgba(217, 70, 239, 0.3);
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.2);
+        }
+
+        .icon-cian {
+            color: #00f2ff;
+            background: rgba(0, 242, 255, 0.1);
+            border-color: rgba(0, 242, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
+        .icon-lime {
+            color: #ccff00;
+            background: rgba(204, 255, 0, 0.1);
+            border-color: rgba(204, 255, 0, 0.3);
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.2);
+        }
+
+        .card-curso h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .card-curso p {
+            color: var(--text-muted);
+            font-size: 14.5px;
+            line-height: 1.5;
+        }
+
+        .bar-conversion {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
+            animation: blinkLive 1s infinite alternate;
+            flex-shrink: 0;
+        }
+
+        @keyframes blinkLive {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+        }
+
+        .bar-left p {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .bar-right {
+            flex-shrink: 0;
+        }
+
+        .bonus-label {
+            background: rgba(204, 255, 0, 0.1);
+            color: #ccff00;
+            border: 1px solid rgba(204, 255, 0, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13.5px;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 15px rgba(204, 255, 0, 0.1);
+            animation: softPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes softPulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(204, 255, 0, 0.1); }
+            50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(204, 255, 0, 0.35); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(204, 255, 0, 0.1); }
+        }
+
+        @media (max-width: 968px) {
+            .grid-metodologia { grid-template-columns: 1fr; }
+            .tool-row, .tool-row.reverse { grid-template-columns: 1fr; gap: 40px; direction: ltr; }
+            .hero-content h1 { font-size: 44px; }
+            .cta-section h2 { font-size: 40px; }
+            .tool-showcase { padding: 35px 25px; }
+            .grid-curso { grid-template-columns: 1fr; gap: 20px; }
+            .bar-conversion { flex-direction: column; text-align: center; gap: 20px; }
+            .bar-left { justify-content: center; }
+            .glow-text-cian { font-size: 28px; }
+            .glow-text-purple { font-size: 16px; }
+        }
+
+        /* Estilos del Óvalo de Membresías y Brillo de Filas */
+        @keyframes dash {
+            from {
+                stroke-dashoffset: 950;
+            }
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        #membresia {
+            position: relative;
+        }
+
+        .pricing-table-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .row-laser-glow {
+            background: rgba(212, 175, 55, 0.12) !important;
+            box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.25) !important;
+            transition: all 0.15s ease-out;
+        }
+        
+        .row-laser-glow td {
+            color: #ffffff !important;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.6) !important;
+        }
+        
+        .row-laser-glow td i.fa-check {
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.9) !important;
+            transform: scale(1.12);
+            color: #ffd700 !important;
+        }
+        
+        .row-laser-glow td i.fa-xmark {
+            opacity: 1 !important;
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.8) !important;
+            color: #ef4444 !important;
+            transform: scale(1.08);
+        }
+
+        /* Letras Holográficas Dinámicas en las Puertas de Vidrio */
+        .door-text {
+            position: absolute;
+            top: 40%;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 10;
+            user-select: none;
+        }
+
+        .door-text-left {
+            right: 40px;
+            background: linear-gradient(135deg, #ffd700 0%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.65));
+            animation: hologramFlickerGold 3s infinite alternate;
+        }
+
+        .door-text-right {
+            left: 40px;
+            background: linear-gradient(135deg, #00f2ff 0%, #00a8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.65));
+            animation: hologramFlickerCyan 3s infinite alternate-reverse;
+        }
+
+        @keyframes hologramFlickerGold {
+            0% { opacity: 0.95; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5)); }
+            24% { opacity: 1; filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.7)); }
+            27% { opacity: 0.88; filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.35)); }
+            30% { opacity: 1; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6)); }
+            70% { opacity: 0.98; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.55)); }
+            72% { opacity: 0.92; filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.3)); }
+            75% { opacity: 1; filter: drop-shadow(0 0 11px rgba(255, 215, 0, 0.65)); }
+            100% { opacity: 0.96; filter: drop-shadow(0 0 9px rgba(255, 215, 0, 0.6)); }
+        }
+
+        @keyframes hologramFlickerCyan {
+            0% { opacity: 0.96; filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.5)); }
+            33% { opacity: 1; filter: drop-shadow(0 0 12px rgba(0, 242, 255, 0.7)); }
+            36% { opacity: 0.9; filter: drop-shadow(0 0 4px rgba(0, 242, 255, 0.35)); }
+            39% { opacity: 1; filter: drop-shadow(0 0 10px rgba(0, 242, 255, 0.6)); }
+            78% { opacity: 0.97; filter: drop-shadow(0 0 8px rgba(0, 242, 255, 0.55)); }
+            81% { opacity: 0.91; filter: drop-shadow(0 0 3px rgba(0, 242, 255, 0.3)); }
+            84% { opacity: 1; filter: drop-shadow(0 0 11px rgba(0, 242, 255, 0.65)); }
+            100% { opacity: 0.95; filter: drop-shadow(0 0 9px rgba(0, 242, 255, 0.6)); }
+        }
+
+        @media (max-width: 768px) {
+            .door-text {
+                font-size: 14px;
+                letter-spacing: 1px;
+                top: 45%;
+            }
+            .door-text-left {
+                right: 20px;
+            }
+            .door-text-right {
+                left: 20px;
+            }
+        }
+
+        /* Canvas para los planetas del Hero */
+        #planets-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2; /* encima de la oficina, debajo de las puertas y el contenido */
+            pointer-events: none;
+            opacity: 0.65;
+        }
+
+        /* Contenedor del video en el Hero */
+        .hero-video-wrapper {
+            width: 100%;
+            max-width: 660px;
+            height: 320px;
+            margin: 25px auto 0 auto;
+            border-radius: 20px;
+            position: relative;
+            background: #020204;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 35px rgba(0, 242, 255, 0.15);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            transition: transform 0.1s ease-out;
+        }
+
+        .hero-video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            display: block;
+        }
+
+        /* Contenedor para el borde de luz cian giratorio */
+        .video-border-glow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .video-border-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .border-rect {
+            fill: none;
+            stroke: #00f2ff;
+            stroke-width: 3.5;
+            stroke-dasharray: 120 700;
+            animation: rotateGlowBorder 5s linear infinite;
+            filter: drop-shadow(0 0 6px #00f2ff) drop-shadow(0 0 12px #00c8ff);
+        }
+
+        @keyframes rotateGlowBorder {
+            0% {
+                stroke-dashoffset: 820;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-video-wrapper {
+                height: 180px;
+                margin-top: 15px;
+            }
+            .hero-content h1 {
+                font-size: 38px;
+            }
+            .hero-content p {
+                font-size: 14.5px;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AI background particle constellation network -->
+    <canvas id="ai-background"></canvas>
+
+    <div class="neon-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo"><img src="zentry_logo.png" alt="Zentry Logo"></a>
+            <nav>
+                <ul>
+                    <li><a href="#metodologia">Metodología</a></li>
+                    <li><a href="#herramientas">Ecosistema</a></li>
+                    <li><a href="#membresia">Membresía</a></li>
+                    <li><button class="btn-nav" onclick="document.getElementById('membresia').scrollIntoView({behavior: 'smooth'});">Unirme VIP</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero-scroll-track" id="inicio">
+        <div class="hero-sticky">
+            <!-- Planets orbiting canvas in background -->
+            <canvas id="planets-canvas"></canvas>
+
+            <!-- Luxury Office Background Image -->
+            <div class="luxury-office-bg">
+                <img src="luxury_office.png" alt="Oficina de Lujo AI">
+                <div class="luxury-office-overlay"></div>
+            </div>
+            
+            <!-- Sliding Transparent Glass Doors -->
+            <div class="doors-container">
+                <div class="door door-left">
+                    <div class="door-grid">
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                    </div>
+                    <div class="handle handle-left"></div>
+                    <div class="door-text door-text-left">Abre las puertas al</div>
+                </div>
+                <div class="door door-right">
+                    <div class="door-grid">
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                        <div class="door-grid-cell"></div>
+                    </div>
+                    <div class="handle handle-right"></div>
+                    <div class="door-text door-text-right">mundo de la ia</div>
+                </div>
+            </div>
+
+            <!-- Hero Content (behind the doors) -->
+            <div class="hero-content">
+                <div class="hero-tag">Digital Products & AI Academy</div>
+                <h1><span>Descubre el Poder de</span><br><span class="gradient-text">Dominando la IA</span></h1>
+                <p>Tu ecosistema definitivo para pasar de la teoría a la creación real. Accede a herramientas exclusivas, automatizaciones avanzadas y sesiones en vivo.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="document.getElementById('membresia').scrollIntoView({behavior: 'smooth'});">Ver Membresía VIP</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enwrapped in 3D Perspective Structure -->
+    <section class="container-3d-wrapper" id="metodologia">
+        <div class="container-3d-content">
+            <div class="section-header">
+                <h2>Nuestra <span>Fórmula de Éxito</span></h2>
+                <p>Un sistema de transformación diseñado para que implementes inteligencia artificial en tiempo récord de forma práctica.</p>
+            </div>
+            <div class="grid-metodologia">
+                <div class="card-metodologia">
+                    <div class="icon-box"><i class="fa-solid fa-brain"></i></div>
+                    <h3>Aprende</h3>
+                    <p>Conceptos fundamentales y estratégicos sobre modelos de IA generativa sin rodeos técnicos.</p>
+                </div>
+                <div class="card-metodologia">
+                    <div class="icon-box"><i class="fa-solid fa-gears"></i></div>
+                    <h3>Aplica</h3>
+                    <p>Ejecuta flujos de trabajo eficientes utilizando software de vanguardia en proyectos reales.</p>
+                </div>
+                <div class="card-metodologia">
+                    <div class="icon-box"><i class="fa-solid fa-rocket"></i></div>
+                    <h3>Crea</h3>
+                    <p>Materializa infoproductos, embudos automatizados y escala tu posicionamiento en el mercado digital.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN: Video Presentación 9:16 con Planetas y Controles -->
+    <section id="video-presentacion" style="padding: 60px 24px; position: relative; overflow: hidden;">
+
+        <!-- Canvas de planetas orbitando de fondo -->
+        <canvas id="video-planets-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
+
+        <!-- Luces de ambiente de fondo -->
+        <div style="position: absolute; width: 400px; height: 400px; background: #00f2ff; border-radius: 50%; filter: blur(120px); opacity: 0.06; top: -80px; left: -80px; pointer-events: none; z-index: 0;"></div>
+        <div style="position: absolute; width: 400px; height: 400px; background: #bc00dd; border-radius: 50%; filter: blur(120px); opacity: 0.06; bottom: -80px; right: -80px; pointer-events: none; z-index: 0;"></div>
+
+        <!-- Encabezado de sección -->
+        <div style="position: relative; text-align: center; margin-bottom: 45px; z-index: 2;">
+            <h2 style="font-family: 'Space Grotesk', sans-serif; font-size: 36px; text-transform: uppercase; letter-spacing: 1px; color: #ffffff;">
+                Mira Cómo lo Hacemos <span style="background: linear-gradient(135deg, #00f2ff, #bc00dd); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">En Vivo</span>
+            </h2>
+            <p style="color: var(--text-muted); font-size: 17px; margin-top: 8px;">Transformando la inteligencia artificial en resultados reales, sesión tras sesión.</p>
+        </div>
+
+        <!-- Contenedor centrado del player 9:16 -->
+        <div style="position: relative; z-index: 2; display: flex; justify-content: center; align-items: flex-start;">
+            <div id="video-player-shell" style="position: relative; width: 360px; border-radius: 22px; overflow: hidden; box-shadow: 0 0 60px rgba(0,242,255,0.25), 0 25px 60px rgba(0,0,0,0.7); background: #000;">
+
+                <!-- Borde neón SVG giratorio -->
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none;">
+                    <svg id="video-border-svg-916" width="100%" height="100%" style="position: absolute; top:0; left:0; overflow: visible;">
+                        <rect id="border-rect-916" x="2" y="2" rx="22" ry="22"
+                              width="calc(100% - 4px)" height="calc(100% - 4px)"
+                              fill="none" stroke="#00f2ff" stroke-width="3"
+                              stroke-dasharray="140 900"
+                              style="animation: rotateGlowBorder 5s linear infinite; filter: drop-shadow(0 0 8px #00f2ff) drop-shadow(0 0 16px #0088cc);">
+                        </rect>
+                    </svg>
+                </div>
+
+                <!-- Badge "En Sesión" -->
+                <div style="position: absolute; top: 14px; left: 14px; z-index: 6; display: flex; align-items: center; gap: 7px; background: rgba(0,0,0,0.6); border: 1px solid rgba(0,242,255,0.35); border-radius: 50px; padding: 5px 13px; backdrop-filter: blur(6px);">
+                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px #ef4444; animation: blinkLive 1s infinite alternate; display: inline-block; flex-shrink:0;"></span>
+                    <span style="font-size: 10px; font-weight: 700; color: #fff; letter-spacing: 1.5px; text-transform: uppercase;">En Sesión</span>
+                </div>
+
+                <!-- El video 9:16 SIN muted para que se escuche el audio -->
+                <video id="main-player-video" loop playsinline
+                       style="width: 100%; aspect-ratio: 9/16; display: block; object-fit: cover; border-radius: 22px;">
+                    <source src="hero_video.mp4" type="video/mp4">
+                </video>
+
+                <!-- Overlay gradiente inferior para los controles -->
+                <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 130px; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); z-index: 4; border-radius: 0 0 22px 22px; pointer-events: none;"></div>
+
+                <!-- CONTROLES PERSONALIZADOS -->
+                <div id="video-controls-bar" style="position: absolute; bottom: 0; left: 0; width: 100%; z-index: 10; padding: 14px 16px 16px 16px; box-sizing: border-box;">
+
+                    <!-- Barra de progreso -->
+                    <div id="progress-container" style="width: 100%; height: 4px; background: rgba(255,255,255,0.18); border-radius: 4px; cursor: pointer; margin-bottom: 12px; position: relative;">
+                        <div id="progress-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #00f2ff, #bc00dd); border-radius: 4px; transition: width 0.1s linear; pointer-events: none;"></div>
+                    </div>
+
+                    <!-- Fila de botones -->
+                    <div style="display: flex; align-items: center; gap: 10px;">
+
+                        <!-- Botón Play / Pause -->
+                        <button id="btn-play-pause" onclick="togglePlayPause()" style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #00f2ff, #bc00dd); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(0,242,255,0.5); flex-shrink: 0; transition: transform 0.2s, box-shadow 0.2s;">
+                            <i class="fa-solid fa-play" id="play-icon" style="color: #000; font-size: 15px; margin-left: 2px;"></i>
+                        </button>
+
+                        <!-- Tiempo -->
+                        <span id="time-display" style="font-size: 11px; color: rgba(255,255,255,0.75); font-family: monospace; flex-shrink: 0;">0:00 / 0:00</span>
+
+                        <!-- Espaciador -->
+                        <div style="flex: 1;"></div>
+
+                        <!-- Botón Mute / Volumen -->
+                        <button id="btn-mute" onclick="toggleMute()" style="width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;">
+                            <i class="fa-solid fa-volume-high" id="mute-icon" style="color: #fff; font-size: 12px;"></i>
+                        </button>
+
+                        <!-- Slider de volumen -->
+                        <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.8"
+                               oninput="setVolume(this.value)"
+                               style="width: 65px; height: 4px; accent-color: #00f2ff; cursor: pointer; flex-shrink: 0;">
+
+                        <!-- Pantalla completa -->
+                        <button onclick="toggleFullscreen()" style="width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;">
+                            <i class="fa-solid fa-expand" style="color: #fff; font-size: 12px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div><!-- /video-player-shell -->
+        </div><!-- /flex center -->
+    </section>
+
+
+    <!-- SECCIÓN: Curso en Vivo Masterclass -->
+    <section class="container" id="curso-vivo-section" style="padding-top: 40px; padding-bottom: 40px;">
+        <div id="curso-vivo">
+            <!-- Galaxy backdrop canvas -->
+            <canvas id="galaxy-canvas"></canvas>
+            
+            <!-- Ambient glows -->
+            <div class="glow-blob glow-purple"></div>
+            <div class="glow-blob glow-cian"></div>
+            
+            <div class="curso-vivo-content">
+                <div class="curso-header">
+                    <h2 class="glow-text-cian">TU ACCESO AL CURSO EN VIVO MASTERCLASS</h2>
+                    <p class="glow-text-purple">Metodología Inmersiva: Aprende, Aplica y Crea en tiempo real.</p>
+                </div>
+                
+                <div class="grid-curso">
+                    <div class="card-curso">
+                        <div class="icon-box-curso icon-purple"><i class="fa-solid fa-headset"></i></div>
+                        <h3>Mentoría Interactiva</h3>
+                        <p>Pregunta en directo y colabora hombro a hombro con el experto y la IA activa.</p>
+                    </div>
+                    <div class="card-curso">
+                        <div class="icon-box-curso icon-cian"><i class="fa-solid fa-cubes"></i></div>
+                        <h3>Implementación Práctica</h3>
+                        <p>Ve demostraciones reales y despliegues en vivo utilizando nuestras herramientas PRO.</p>
+                    </div>
+                    <div class="card-curso">
+                        <div class="icon-box-curso icon-lime"><i class="fa-solid fa-bolt"></i></div>
+                        <h3>Resultados Inmediatos</h3>
+                        <p>Sal de la sesión con tus propios embudos y proyectos validados listos para facturar.</p>
+                    </div>
+                </div>
+                
+                <div class="bar-conversion">
+                    <div class="bar-left">
+                        <span class="live-dot"></span>
+                        <p>Cupo Limitado: El futuro no espera, asegura tu asiento VIP antes de que se agoten.</p>
+                    </div>
+                    <div class="bar-right">
+                        <span class="bonus-label"><i class="fa-solid fa-gift"></i> ¡Y DE BONO INCLUIDO TE LLEVAS EL SIGUIENTE ECOSISTEMA!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" id="herramientas">
+        <div class="section-header" id="herramientas-header">
+            <canvas id="robot-laser-canvas"></canvas>
+            <h2 id="laser-title">Un Ecosistema de <span>3 Herramientas Potentes</span></h2>
+            <p id="laser-desc">Todo lo que necesitas para gestionar, alojar y monetizar tu presencia digital desde un solo panel de control.</p>
+        </div>
+
+        <div class="tool-showcase">
+            <div class="tool-row">
+                <div class="tool-info">
+                    <h3>NexLink <span>Link en Bio</span></h3>
+                    <p>La página de enlaces que brilla en la oscuridad. Diseñada con una estética neón impecable para unificar todas tus redes sociales.</p>
+                    <ul class="tool-features">
+                        <li><i class="fa-solid fa-circle-check"></i> Personalización granular de paletas, fuentes y avatares.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Bloques interactivos ilimitados y arrastrables.</li>
+                    </ul>
+                </div>
+                <div class="tool-visual">
+                    <div class="nexlink-phone-container">
+                        <div class="phone-flipper">
+                            <!-- Notch -->
+                            <div class="phone-notch"></div>
+                            
+                            <!-- Front face (Landing page - Adapted Image 2) -->
+                            <div class="phone-face phone-front">
+                                <div class="front-content">
+                                    <div class="front-logo"><i class="fa-solid fa-link"></i> NexLink</div>
+                                    <div class="front-title">Una página de enlaces que <span>brilla en la oscuridad</span></div>
+                                    <div class="front-sub">La plataforma "link-in-bio" autohospedada con edición granular, analíticas y diseño neón total.</div>
+                                    <button class="front-btn">Crea tu NexLink</button>
+                                    
+                                    <div class="front-features">
+                                        <div class="front-feat-card">
+                                            <i class="fa-solid fa-palette"></i>
+                                            <span>Diseño neón total</span>
+                                        </div>
+                                        <div class="front-feat-card">
+                                            <i class="fa-solid fa-cubes"></i>
+                                            <span>Bloques sin límite</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Back face (User Profile - Adapted Image 3) -->
+                            <div class="phone-face phone-back">
+                                <div class="back-banner"></div>
+                                <div class="back-content">
+                                    <div class="back-avatar-container">
+                                        <img class="back-avatar" src="my_avatar.png" alt="User Avatar">
+                                    </div>
+                                    <div class="back-handle">zentrycompan</div>
+                                    <div class="back-bio">¡Bienvenidos! Desde hoy, este será nuestro espacio oficial para las clases. ¡Listos para comenzar!</div>
+                                    
+                                    <div class="back-socials">
+                                        <i class="fa-brands fa-tiktok"></i>
+                                        <i class="fa-solid fa-envelope"></i>
+                                        <i class="fa-brands fa-youtube"></i>
+                                    </div>
+                                    
+                                    <div class="back-links">
+                                        <div class="back-link-btn">
+                                            <i class="fa-solid fa-graduation-cap"></i>
+                                            <span>Academy free, todo en un solo lugar</span>
+                                        </div>
+                                        <div class="back-link-btn link-whatsapp">
+                                            <i class="fa-brands fa-whatsapp"></i>
+                                            <span>Únete a WhatsApp gratis</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Neon Toggle Selector -->
+                    <div class="phone-toggle">
+                        <div class="toggle-btn active" id="toggle-landing">Plataforma</div>
+                        <div class="toggle-btn" id="toggle-profile">Perfil VIP</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-row reverse">
+                <div class="tool-info">
+                    <h3>Link Shop <span>Venta Express</span></h3>
+                    <p>Sube tus guías o ebooks en formato PDF y configura tu pasarela de cobro de inmediato. Automatización total de entregas.</p>
+                    <ul class="tool-features">
+                        <li><i class="fa-solid fa-circle-check"></i> Alojamiento seguro y descarga directa de archivos PDF.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Catálogo digital integrado para múltiples infoproductos.</li>
+                    </ul>
+                </div>
+                <div class="tool-visual">
+                    <div class="shop-phone-container">
+                        <div class="phone-flipper shop-phone-flipper">
+                            <!-- Notch -->
+                            <div class="phone-notch"></div>
+                            
+                            <!-- Front face (LinkShop Landing Page - Adapted Image 1) -->
+                            <div class="phone-face shop-phone-face shop-front" style="background: radial-gradient(circle at bottom right, rgba(0, 242, 255, 0.15) 0%, #050508 70%); display: flex; flex-direction: column; justify-content: space-between; padding: 15px 12px; height: 100%;">
+                                <!-- Mini header -->
+                                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                    <div class="shop-front-logo" style="margin-bottom: 0; font-size: 13px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #00f2ff; box-shadow: 0 0 8px #00f2ff;"></i> LinkShop</div>
+                                    <button style="background: rgba(12, 12, 18, 0.95); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; font-size: 7px; font-weight: 600; padding: 3px 8px; border-radius: 50px; cursor: pointer;">Iniciar sesión</button>
+                                </div>
+                                
+                                <!-- Center Content -->
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 10px; width: 100%;">
+                                    <!-- Badge -->
+                                    <div style="background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 50px; padding: 3px 8px; display: flex; align-items: center; gap: 4px;">
+                                        <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 7px; color: #00f2ff;"></i>
+                                        <span style="font-size: 6px; font-weight: 700; color: #00f2ff; text-transform: uppercase; letter-spacing: 0.3px;">Para creadores que venden digital</span>
+                                    </div>
+                                    
+                                    <!-- Title -->
+                                    <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; line-height: 1.25; color: #ffffff; text-align: center; margin: 2px 0;">
+                                        Tu <span style="color: #00f2ff; text-shadow: 0 0 10px rgba(0, 242, 255, 0.4);">Link in Bio</span><br>es tu nueva tienda.
+                                    </h1>
+                                    
+                                    <!-- Subtitle -->
+                                    <p style="font-size: 7.5px; color: var(--text-muted); line-height: 1.35; text-align: center; max-width: 190px;">
+                                        Diseña una tienda vibrante en minutos. Plantillas glassmorphism, efectos neón, animaciones 3D y más.
+                                    </p>
+                                    
+                                    <button class="shop-front-btn" style="margin-top: 2px;">Crear mi tienda gratis</button>
+                                </div>
+                                
+                                <!-- Bottom cards -->
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; width: 100%; margin-top: 8px;">
+                                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.08); border-radius: 6px; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left;">
+                                        <i class="fa-solid fa-store" style="font-size: 7px; color: #00f2ff;"></i>
+                                        <span style="font-size: 5.5px; font-weight: 600; color: #ffffff; line-height: 1.1;">11 plantillas premium</span>
+                                    </div>
+                                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.08); border-radius: 6px; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left;">
+                                        <i class="fa-solid fa-bolt" style="font-size: 7px; color: #00f2ff;"></i>
+                                        <span style="font-size: 5.5px; font-weight: 600; color: #ffffff; line-height: 1.1;">5 efectos animados</span>
+                                    </div>
+                                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(0, 242, 255, 0.08); border-radius: 6px; padding: 4px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left;">
+                                        <i class="fa-solid fa-layer-group" style="font-size: 7px; color: #00f2ff;"></i>
+                                        <span style="font-size: 5.5px; font-weight: 600; color: #ffffff; line-height: 1.1;">Productos animados</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Back face (User Shop Page - Adapted Image 2) -->
+                            <div class="phone-face shop-phone-face shop-back">
+                                <img src="linkshop_store.png" alt="Jose / IA + Marketing Store" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Neon Toggle Selector -->
+                    <div class="phone-toggle">
+                        <div class="toggle-btn active" id="toggle-shop-landing">Plataforma</div>
+                        <div class="toggle-btn" id="toggle-shop-profile">Mi Tienda</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tool-row">
+                <div class="tool-info">
+                    <h3>Web Builder & Hosting <span>Pro Nivel</span></h3>
+                    <p>Construye landing pages básicas con nuestro editor visual o sube directamente tu propio código estructurado en HTML.</p>
+                    <ul class="tool-features">
+                        <li><i class="fa-solid fa-circle-check"></i> Hosting escalable y seguro incluido en tu membresía.</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Soporte nativo para subir código HTML/CSS personalizado.</li>
+                    </ul>
+                </div>
+                <div class="tool-visual">
+                    <div class="builder-desktop-container">
+                        <div class="builder-flipper">
+                            <!-- Front face (Dashboard - Adapted Image 3) -->
+                            <div class="builder-face desk-front" style="background: #06060a;">
+                                <div class="desk-header-bar">
+                                    <span class="circle-dot" style="background: #ff5f56;"></span>
+                                    <span class="circle-dot" style="background: #ffbd2e;"></span>
+                                    <span class="circle-dot" style="background: #27c93f;"></span>
+                                    <div class="desk-title-bar">Dashboard de Tienda</div>
+                                </div>
+                                <div style="flex: 1; overflow: hidden; position: relative;">
+                                    <img src="builder_dashboard.jpg" alt="Zentry Dashboard" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                </div>
+                            </div>
+                            
+                            <!-- Back face (Visual Builder - Adapted Image 4) -->
+                            <div class="builder-face desk-back" style="background: #050508;">
+                                <div class="desk-header-bar">
+                                    <span class="circle-dot" style="background: #ff5f56;"></span>
+                                    <span class="circle-dot" style="background: #ffbd2e;"></span>
+                                    <span class="circle-dot" style="background: #27c93f;"></span>
+                                    <div class="desk-title-bar">Constructor Visual</div>
+                                </div>
+                                <div style="flex: 1; overflow: hidden; position: relative;">
+                                    <img src="builder_editor.png" alt="Visual Builder Editor" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Neon Toggle Selector -->
+                    <div class="phone-toggle">
+                        <div class="toggle-btn active" id="toggle-builder-dash">Dashboard</div>
+                        <div class="toggle-btn" id="toggle-builder-edit">Constructor</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container" id="membresia" style="position: relative;">
+        <!-- Canvas para los robots humanoides y sus láseres -->
+        <canvas id="membresia-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none;"></canvas>
+
+        <!-- Cabecera en Óvalo con Luz Brillante Pasando -->
+        <div class="membresia-header-oval-container" style="position: relative; width: 100%; max-width: 800px; margin: 0 auto 40px auto; text-align: center; z-index: 2;">
+            <svg viewBox="0 0 800 220" style="width: 100%; height: auto; overflow: visible; display: block;">
+                <defs>
+                    <linearGradient id="gold-text-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#d4af37" />
+                        <stop offset="50%" stop-color="#ffd700" />
+                        <stop offset="100%" stop-color="#d4af37" />
+                    </linearGradient>
+                    <linearGradient id="oval-glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(212,175,55,0)" />
+                        <stop offset="25%" stop-color="rgba(255,215,0,0.15)" />
+                        <stop offset="50%" stop-color="#ffd700" />
+                        <stop offset="75%" stop-color="rgba(255,215,0,0.15)" />
+                        <stop offset="100%" stop-color="rgba(212,175,55,0)" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Óvalo base (borde difuminado) -->
+                <path id="oval-base-path" d="M 50,110 A 350,85 0 1,1 750,110 A 350,85 0 1,1 50,110" 
+                      fill="none" stroke="rgba(212, 175, 55, 0.12)" stroke-width="2" />
+
+                <!-- Luz brillante que recorre el óvalo -->
+                <path id="oval-light-path" d="M 50,110 A 350,85 0 1,1 750,110 A 350,85 0 1,1 50,110" 
+                      fill="none" stroke="url(#oval-glow-grad)" stroke-width="4.5" stroke-linecap="round"
+                      style="stroke-dasharray: 180 770; animation: dash 5s linear infinite; filter: drop-shadow(0 0 10px #ffd700);" />
+
+                <!-- Texto curvado arriba (Estructura de Membresías) -->
+                <path id="oval-text-top" d="M 80,98 A 320,70 0 0,1 720,98" fill="none" />
+                <text font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="30" letter-spacing="4">
+                    <textPath href="#oval-text-top" startOffset="50%" text-anchor="middle" fill="url(#gold-text-grad)" style="text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);">
+                        ESTRUCTURA DE MEMBRESÍAS
+                    </textPath>
+                </text>
+
+                <!-- Subtítulo centrado en la parte interior -->
+                <text x="400" y="138" font-family="'Plus Jakarta Sans', sans-serif" font-weight="500" font-size="13.5" fill="#94a3b8" text-anchor="middle" letter-spacing="0.5">
+                    Compara detalladamente los beneficios y descubre por qué el Plan VIP Pro
+                </text>
+                <text x="400" y="160" font-family="'Plus Jakarta Sans', sans-serif" font-weight="500" font-size="13.5" fill="#94a3b8" text-anchor="middle" letter-spacing="0.5">
+                    es el catalizador estratégico que necesitas.
+                </text>
+            </svg>
+        </div>
+
+        <div class="pricing-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Beneficio Exclusivo</th>
+                        <th class="plan-standard">Plan Iniciado</th>
+                        <th class="plan-vip"><i class="fa-solid fa-crown"></i> Plan Dominio Pro (VIP)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Acceso Completo a la Comunidad Zentry</td>
+                        <td><i class="fa-solid fa-check"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Plataforma Link en Bio (NexLink)</td>
+                        <td><i class="fa-solid fa-xmark"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Sesiones de Mentoría Mensuales</td>
+                        <td><i class="fa-solid fa-check"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="vip-badge-cell"><i class="fa-solid fa-star"></i> Clases en Vivo Especializadas</td>
+                        <td><i class="fa-solid fa-xmark"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check" style="color: var(--secondary);"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="vip-badge-cell"><i class="fa-solid fa-star"></i> Biblioteca de Prompts VIP</td>
+                        <td><i class="fa-solid fa-xmark"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check" style="color: var(--secondary);"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="vip-badge-cell"><i class="fa-solid fa-star"></i> Herramientas de Automatización Pro</td>
+                        <td><i class="fa-solid fa-xmark"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check" style="color: var(--secondary);"></i></td>
+                    </tr>
+                    <tr>
+                        <td class="vip-badge-cell"><i class="fa-solid fa-star"></i> Acceso Temprano a Nuevas Herramientas</td>
+                        <td><i class="fa-solid fa-xmark"></i></td>
+                        <td class="plan-vip-cell"><i class="fa-solid fa-check" style="color: var(--secondary);"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="cta-section">
+            <h2>El Futuro Lo Creas Tú</h2>
+            <p>Desbloquea todo tu potencial hoy mismo ingresando a la comunidad de productos digitales e inteligencia artificial.</p>
+            <a href="https://pay.hotmart.com/U103733505J" target="_blank" rel="noopener noreferrer" class="btn-primary" style="display: inline-block; text-decoration: none;">¡Adquirir Membresía VIP Pro Ahora!</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Zentry Company. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.getElementById('inicio');
+            const doorLeft = document.querySelector('.door-left');
+            const doorRight = document.querySelector('.door-right');
+            const heroContent = document.querySelector('.hero-content');
+            const doorsContainer = document.querySelector('.doors-container');
+            const metodologiaContent = document.querySelector('.container-3d-content');
+
+            function handleScroll() {
+                const scrollProgress = window.scrollY;
+                const maxScroll = window.innerHeight; // The animation lasts for exactly 100vh of scroll
+
+                let ratio = scrollProgress / maxScroll;
+                if (ratio < 0) ratio = 0;
+                if (ratio > 1) ratio = 1;
+
+                // Animate doors: slide them left and right respectively
+                doorLeft.style.transform = `translateX(-${ratio * 100}%)`;
+                doorRight.style.transform = `translateX(${ratio * 100}%)`;
+
+                // Fade in and scale text content behind the glass
+                heroContent.style.opacity = ratio;
+                heroContent.style.transform = `scale(${0.92 + ratio * 0.08})`;
+
+                // --- 3D Transition for Metodologia Section ---
+                const startTransition = maxScroll * 0.4;
+                const endTransition = maxScroll * 1.5;
+                
+                let transRatio = (scrollProgress - startTransition) / (endTransition - startTransition);
+                if (transRatio < 0) transRatio = 0;
+                if (transRatio > 1) transRatio = 1;
+
+                // RotX goes from 20deg down to 0deg
+                // TranslateY goes from 80px down to 0px
+                // TranslateZ goes from -200px up to 0px
+                // Scale goes from 0.88 to 1.0
+                // Opacity goes from 0.3 to 1.0
+                const rotX = 20 - (transRatio * 20);
+                const transY = 80 - (transRatio * 80);
+                const transZ = -200 + (transRatio * 200);
+                const scale = 0.88 + (transRatio * 0.12);
+                const opacity = 0.3 + (transRatio * 0.7);
+
+                metodologiaContent.style.transform = `rotateX(${rotX}deg) translateY(${transY}px) translateZ(${transZ}px) scale(${scale})`;
+                metodologiaContent.style.opacity = opacity;
+
+                // Enable mouse interactions for hero content buttons once doors begin to open
+                if (ratio > 0.45) {
+                    heroContent.style.pointerEvents = 'auto';
+                } else {
+                    heroContent.style.pointerEvents = 'none';
+                }
+
+                // Prevent the closed/partially-open doors container from capturing clicks when fully open
+                if (ratio > 0.95) {
+                    doorsContainer.style.pointerEvents = 'none';
+                } else {
+                    doorsContainer.style.pointerEvents = 'auto';
+                }
+            }
+
+            // Initialize positioning on load & hook scroll listener
+            handleScroll();
+            window.addEventListener('scroll', handleScroll, { passive: true });
+
+            // --- Planets and AI Telemetry Canvas Animation ---
+            const pCanvas = document.getElementById('planets-canvas');
+            const pCtx = pCanvas.getContext('2d');
+            let pPlanets = [];
+
+            function resizePlanetsCanvas() {
+                pCanvas.width = window.innerWidth;
+                pCanvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizePlanetsCanvas);
+            resizePlanetsCanvas();
+
+            // AI messages to display for each planet
+            const aiMessages = [
+                "SYSTEM: CORE_ON | TRANS: LOADED",
+                "RED_NEURONAL: ACTIVE | SYNAPSE: GO",
+                "DATALINK: ESTABLE | LATENCY: 0.1ms",
+                "QUANTUM_CORE: RUNNING | ACCEL: 98.7%"
+            ];
+
+            class Planet {
+                constructor(orbitRadius, baseSpeed, planetSize, color, message, isCyan) {
+                    this.orbitRadiusX = orbitRadius * 1.5;
+                    this.orbitRadiusY = orbitRadius * 0.55;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.speed = baseSpeed;
+                    this.size = planetSize;
+                    this.color = color;
+                    this.message = message;
+                    this.isCyan = isCyan;
+                    this.pulsePhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    this.angle += this.speed;
+                    this.pulsePhase += 0.05;
+                }
+
+                draw(cx, cy) {
+                    const px = cx + this.orbitRadiusX * Math.cos(this.angle);
+                    const py = cy + this.orbitRadiusY * Math.sin(this.angle);
+
+                    // Draw Orbit path
+                    pCtx.save();
+                    pCtx.beginPath();
+                    pCtx.ellipse(cx, cy, this.orbitRadiusX, this.orbitRadiusY, 0, 0, Math.PI * 2);
+                    pCtx.strokeStyle = this.isCyan ? 'rgba(0, 242, 255, 0.08)' : 'rgba(212, 175, 55, 0.08)';
+                    pCtx.lineWidth = 1;
+                    pCtx.setLineDash([4, 12]);
+                    pCtx.stroke();
+                    pCtx.restore();
+
+                    // Draw Planet Sphere
+                    pCtx.save();
+                    pCtx.shadowBlur = 10 + Math.sin(this.pulsePhase) * 5;
+                    pCtx.shadowColor = this.color;
+                    pCtx.fillStyle = this.color;
+                    pCtx.beginPath();
+                    pCtx.arc(px, py, this.size, 0, Math.PI * 2);
+                    pCtx.fill();
+                    pCtx.restore();
+
+                    // Inner core
+                    pCtx.fillStyle = '#ffffff';
+                    pCtx.beginPath();
+                    pCtx.arc(px, py, this.size * 0.4, 0, Math.PI * 2);
+                    pCtx.fill();
+
+                    // Telemetry indicator lines and labels
+                    pCtx.save();
+                    const lineLength = 40;
+                    const endX = px + lineLength;
+                    const endY = py - lineLength;
+
+                    pCtx.strokeStyle = this.isCyan ? 'rgba(0, 242, 255, 0.35)' : 'rgba(212, 175, 55, 0.35)';
+                    pCtx.lineWidth = 1;
+                    pCtx.setLineDash([2, 4]);
+                    pCtx.beginPath();
+                    pCtx.moveTo(px, py);
+                    pCtx.lineTo(endX, endY);
+                    pCtx.lineTo(endX + 15, endY);
+                    pCtx.stroke();
+
+                    pCtx.font = "bold 9.5px monospace";
+                    pCtx.fillStyle = this.isCyan ? '#00f2ff' : '#ffd700';
+                    pCtx.shadowColor = pCtx.fillStyle;
+                    pCtx.shadowBlur = 4;
+                    pCtx.fillText(this.message, endX + 20, endY + 3);
+
+                    pCtx.beginPath();
+                    pCtx.arc(endX, endY, 1.5, 0, Math.PI * 2);
+                    pCtx.fillStyle = '#ffffff';
+                    pCtx.fill();
+
+                    pCtx.restore();
+                }
+            }
+
+            pPlanets.push(new Planet(160, 0.0035, 7.5, '#00f2ff', aiMessages[0], true));
+            pPlanets.push(new Planet(240, 0.0022, 9, '#ffd700', aiMessages[1], false));
+            pPlanets.push(new Planet(320, 0.0015, 11, '#bc00dd', aiMessages[2], true));
+            pPlanets.push(new Planet(400, 0.0011, 8, '#00f2ff', aiMessages[3], true));
+
+            function animatePlanets() {
+                pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+
+                const cx = pCanvas.width / 2;
+                const cy = pCanvas.height * 0.52;
+
+                // Pulsing central node
+                pCtx.save();
+                const corePulse = 18 + Math.sin(Date.now() * 0.003) * 3;
+                pCtx.shadowBlur = corePulse * 1.5;
+                pCtx.shadowColor = '#00f2ff';
+                pCtx.fillStyle = 'rgba(0, 242, 255, 0.06)';
+                pCtx.beginPath();
+                pCtx.arc(cx, cy, corePulse * 1.8, 0, Math.PI * 2);
+                pCtx.fill();
+
+                pCtx.strokeStyle = 'rgba(0, 242, 255, 0.25)';
+                pCtx.lineWidth = 1;
+                pCtx.stroke();
+                pCtx.restore();
+
+                pPlanets.forEach(planet => {
+                    planet.update();
+                    planet.draw(cx, cy);
+                });
+
+                requestAnimationFrame(animatePlanets);
+            }
+            animatePlanets();
+
+            // --- AI Background Canvas Particles ---
+            const canvas = document.getElementById('ai-background');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const particleCount = 75;
+            const maxDistance = 115;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.7;
+                    this.vy = (Math.random() - 0.5) * 0.7;
+                    this.radius = Math.random() * 2 + 1;
+                    this.isCyan = Math.random() > 0.5;
+                }
+
+                update() {
+                    // Constant slow movement
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    // Drifts upward as the user scrolls down, connecting background movement to scroll
+                    this.y -= window.scrollY * 0.00015;
+
+                    // Boundaries handling
+                    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                    if (this.y < 0) this.y = canvas.height;
+                    if (this.y > canvas.height) this.y = 0;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    // Glow cyan or gold
+                    ctx.fillStyle = this.isCyan ? 'rgba(0, 242, 255, 0.45)' : 'rgba(212, 175, 55, 0.45)';
+                    ctx.fill();
+                }
+            }
+
+            // Populate particle array
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateBackground() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw connecting paths between close particles
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < maxDistance) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            
+                            // Make connections more transparent at longer distances
+                            const alpha = (1 - (dist / maxDistance)) * 0.12;
+                            ctx.strokeStyle = particles[i].isCyan 
+                                ? `rgba(0, 242, 255, ${alpha})` 
+                                : `rgba(212, 175, 55, ${alpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animateBackground);
+            }
+            animateBackground();
+
+            // --- 3D Interactive Tilt & Spotlight for Metodología Cards ---
+            const cards = document.querySelectorAll('.card-metodologia');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                    
+                    const cardWidth = rect.width;
+                    const cardHeight = rect.height;
+                    const centerX = cardWidth / 2;
+                    const centerY = cardHeight / 2;
+                    
+                    const rotateX = ((centerY - y) / centerY) * 12;
+                    const rotateY = ((x - centerX) / centerX) * 12;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px) scale(1.02)`;
+                    card.style.boxShadow = `0 15px 35px rgba(212, 175, 55, 0.15)`;
+                    card.style.borderColor = `var(--border-hover)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0deg) scale(1)';
+                    card.style.boxShadow = 'none';
+                    card.style.borderColor = 'var(--border)';
+                });
+            });
+
+            // --- Header Spiral Animation ---
+            const spiralCanvas = document.createElement('canvas');
+            spiralCanvas.className = 'header-spiral-canvas';
+            const header = document.querySelector('#metodologia .section-header');
+            if (header) {
+                header.insertBefore(spiralCanvas, header.firstChild);
+
+                const sCtx = spiralCanvas.getContext('2d');
+                let spiralAngle = 0;
+
+                function resizeSpiralCanvas() {
+                    const rect = header.getBoundingClientRect();
+                    spiralCanvas.width = rect.width;
+                    spiralCanvas.height = rect.height;
+                }
+                window.addEventListener('resize', resizeSpiralCanvas);
+                resizeSpiralCanvas();
+                setTimeout(resizeSpiralCanvas, 100);
+
+                function drawSpiral() {
+                    sCtx.clearRect(0, 0, spiralCanvas.width, spiralCanvas.height);
+                    
+                    const centerX = spiralCanvas.width / 2;
+                    const centerY = spiralCanvas.height / 2;
+                    
+                    const numLoops = 4;
+                    const maxAngle = numLoops * Math.PI * 2;
+                    const maxRadius = Math.min(spiralCanvas.width, spiralCanvas.height) * 0.7;
+                    const b = maxRadius / maxAngle;
+
+                    for (let theta = 0; theta < maxAngle; theta += 0.08) {
+                        const rAngle = theta + spiralAngle + (window.scrollY * 0.002);
+                        const r = b * theta;
+                        
+                        const x = centerX + r * Math.cos(rAngle);
+                        const y = centerY + r * Math.sin(rAngle);
+
+                        sCtx.fillStyle = `rgba(212, 175, 55, ${0.45 * (1 - theta/maxAngle)})`;
+                        sCtx.beginPath();
+                        sCtx.arc(x, y, 1.5 + (1 - theta/maxAngle) * 2, 0, Math.PI * 2);
+                        sCtx.fill();
+                        
+                        if (Math.floor(theta * 10) % 7 === 0) {
+                            sCtx.fillStyle = `rgba(0, 242, 255, ${0.4 * (1 - theta/maxAngle)})`;
+                            sCtx.beginPath();
+                            sCtx.arc(x + 5 * Math.sin(rAngle), y + 5 * Math.cos(rAngle), 1.2, 0, Math.PI * 2);
+                            sCtx.fill();
+                        }
+                    }
+                    
+                    spiralAngle += 0.004;
+                    requestAnimationFrame(drawSpiral);
+                }
+                drawSpiral();
+            }
+
+            // --- Robot Laser Text Entrance Animation ---
+            const laserCanvas = document.getElementById('robot-laser-canvas');
+            const lCtx = laserCanvas.getContext('2d');
+            const laserTitle = document.getElementById('laser-title');
+            const laserDesc = document.getElementById('laser-desc');
+
+            // Load user avatar for floating laser scan head
+            const avatarImg = new Image();
+            avatarImg.src = 'my_avatar.png';
+
+            if (laserCanvas && laserTitle && laserDesc) {
+                // Wrap words in spans
+                function wrapLaserWords(element, isTitle) {
+                    const text = element.innerText;
+                    const words = text.split(/\s+/);
+                    element.innerHTML = words.map((word, idx) => {
+                        if (isTitle && idx >= 3) {
+                            return `<span class="laser-word highlight-word">${word}</span>`;
+                        }
+                        return `<span class="laser-word">${word}</span>`;
+                    }).join(' ');
+                }
+                wrapLaserWords(laserTitle, true);
+                wrapLaserWords(laserDesc, false);
+
+                const wordsList = Array.from(document.querySelectorAll('#herramientas-header .laser-word'));
+                let lasers = [];
+                let sparks = [];
+
+                // Avatar properties and coordinates of the mechanical hand relative to center
+                const AVATAR_RADIUS = 65; // Make the avatar larger
+                const HAND_X_OFFSET = -0.2686 * AVATAR_RADIUS; 
+                const HAND_Y_OFFSET = 0.6541 * AVATAR_RADIUS;
+
+                // Robot position relative to canvas
+                let robotX = 80;
+                let robotY = 60;
+
+                function resizeLaserCanvas() {
+                    const header = document.getElementById('herramientas-header');
+                    if (header) {
+                        const rect = header.getBoundingClientRect();
+                        laserCanvas.width = rect.width;
+                        laserCanvas.height = rect.height;
+                        robotX = laserCanvas.width / 2;
+                        robotY = AVATAR_RADIUS + 10; // Keep the avatar completely inside the canvas at the top
+                    }
+                }
+                window.addEventListener('resize', resizeLaserCanvas);
+                resizeLaserCanvas();
+                setTimeout(resizeLaserCanvas, 150);
+
+                class Spark {
+                    constructor(x, y, color) {
+                        this.x = x;
+                        this.y = y;
+                        this.vx = (Math.random() - 0.5) * 6;
+                        this.vy = (Math.random() - 0.5) * 6;
+                        this.alpha = 1;
+                        this.size = Math.random() * 3 + 1;
+                        this.color = color;
+                    }
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        this.vy += 0.05; // gravity
+                        this.alpha -= 0.03;
+                    }
+                    draw() {
+                        lCtx.save();
+                        lCtx.globalAlpha = this.alpha;
+                        lCtx.beginPath();
+                        lCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        lCtx.fillStyle = this.color;
+                        lCtx.shadowColor = this.color;
+                        lCtx.shadowBlur = 10;
+                        lCtx.fill();
+                        lCtx.restore();
+                    }
+                }
+
+                class LaserBeam {
+                    constructor(sx, sy, tx, ty, color, onHit) {
+                        this.sx = sx;
+                        this.sy = sy;
+                        this.tx = tx;
+                        this.ty = ty;
+                        this.color = color;
+                        this.progress = 0;
+                        this.speed = 0.15;
+                        this.onHit = onHit;
+                        this.hitTriggered = false;
+                    }
+                    update() {
+                        this.progress += this.speed;
+                        if (this.progress >= 1) {
+                            this.progress = 1;
+                            if (!this.hitTriggered) {
+                                this.onHit();
+                                this.hitTriggered = true;
+                            }
+                        }
+                    }
+                    draw(currentHandX, currentHandY) {
+                        lCtx.save();
+                        const sx = currentHandX !== undefined ? currentHandX : this.sx;
+                        const sy = currentHandY !== undefined ? currentHandY : this.sy;
+                        
+                        // Single thick supercharged plasma beam shooting from the mechanical hand
+                        lCtx.beginPath();
+                        lCtx.moveTo(sx, sy);
+                        const currentX = sx + (this.tx - sx) * this.progress;
+                        const currentY = sy + (this.ty - sy) * this.progress;
+                        lCtx.lineTo(currentX, currentY);
+                        
+                        lCtx.strokeStyle = this.color;
+                        lCtx.lineWidth = 4.5;
+                        lCtx.shadowColor = this.color;
+                        lCtx.shadowBlur = 16;
+                        lCtx.stroke();
+                        
+                        // Glowing inner white core
+                        lCtx.strokeStyle = '#ffffff';
+                        lCtx.lineWidth = 1.5;
+                        lCtx.stroke();
+                        
+                        lCtx.restore();
+                    }
+                }
+
+                function fireLaserAtWord(index) {
+                    if (index >= wordsList.length) return;
+                    const word = wordsList[index];
+                    const canvasRect = laserCanvas.getBoundingClientRect();
+                    const wordRect = word.getBoundingClientRect();
+
+                    const tx = wordRect.left - canvasRect.left + wordRect.width / 2;
+                    const ty = wordRect.top - canvasRect.top + wordRect.height / 2;
+
+                    const color = index % 2 === 0 ? '#00f2ff' : '#ffd700';
+
+                    // Estimate dynamic mechanical hand coordinates at moment of firing
+                    const currentFloatY = robotY + Math.sin(Date.now() * 0.0025) * 5;
+                    const handX = robotX + HAND_X_OFFSET;
+                    const handY = currentFloatY + HAND_Y_OFFSET;
+
+                    lasers.push(new LaserBeam(handX, handY, tx, ty, color, () => {
+                        word.classList.add('active');
+                        for (let i = 0; i < 12; i++) {
+                            sparks.push(new Spark(tx, ty, color));
+                        }
+                    }));
+                }
+
+                let sequenceStarted = false;
+                function startSequence() {
+                    if (sequenceStarted) return;
+                    sequenceStarted = true;
+                    let index = 0;
+                    
+                    function nextWord() {
+                        if (index < wordsList.length) {
+                            fireLaserAtWord(index);
+                            index++;
+                            setTimeout(nextWord, 180);
+                        }
+                    }
+                    nextWord();
+                }
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            startSequence();
+                            observer.disconnect();
+                        }
+                    });
+                }, { threshold: 0.15 });
+                observer.observe(document.getElementById('herramientas'));
+
+                function animateLaserCanvas() {
+                    lCtx.clearRect(0, 0, laserCanvas.width, laserCanvas.height);
+
+                    const floatY = robotY + Math.sin(Date.now() * 0.0025) * 5;
+                    const handX = robotX + HAND_X_OFFSET;
+                    const handY = floatY + HAND_Y_OFFSET;
+
+                    lasers = lasers.filter(laser => {
+                        laser.update();
+                        laser.draw(handX, handY);
+                        return laser.progress < 1 || !laser.hitTriggered;
+                    });
+
+                    sparks = sparks.filter(spark => {
+                        spark.update();
+                        spark.draw();
+                        return spark.alpha > 0;
+                    });
+
+                    // Draw the floating User Avatar Scan Head (Made larger, AVATAR_RADIUS)
+                    lCtx.save();
+                    
+                    // Apply clipping mask for circular avatar
+                    lCtx.save();
+                    lCtx.beginPath();
+                    lCtx.arc(robotX, floatY, AVATAR_RADIUS, 0, Math.PI * 2);
+                    lCtx.clip();
+                    
+                    // Draw the image
+                    if (avatarImg.complete && avatarImg.naturalWidth !== 0) {
+                        lCtx.drawImage(avatarImg, robotX - AVATAR_RADIUS, floatY - AVATAR_RADIUS, AVATAR_RADIUS * 2, AVATAR_RADIUS * 2);
+                    } else {
+                        // Golden circle placeholder
+                        lCtx.fillStyle = '#0d0d12';
+                        lCtx.fill();
+                    }
+                    lCtx.restore();
+
+                    // Outer golden glowing ring
+                    lCtx.beginPath();
+                    lCtx.arc(robotX, floatY, AVATAR_RADIUS, 0, Math.PI * 2);
+                    lCtx.strokeStyle = 'var(--primary)';
+                    lCtx.lineWidth = 2.5;
+                    lCtx.shadowColor = 'var(--primary)';
+                    lCtx.shadowBlur = 12;
+                    lCtx.stroke();
+
+                    // Glowing cyan cybernetic energy core directly on the mechanical right hand
+                    lCtx.beginPath();
+                    lCtx.arc(handX, handY, 5.5, 0, Math.PI * 2);
+                    lCtx.fillStyle = '#00f2ff';
+                    lCtx.shadowColor = '#00f2ff';
+                    lCtx.shadowBlur = 18;
+                    lCtx.fill();
+                    
+                    lCtx.restore();
+
+                    requestAnimationFrame(animateLaserCanvas);
+                }
+                animateLaserCanvas();
+            }
+
+            // --- Galaxy Canvas Background Animation ---
+            const gCanvas = document.getElementById('galaxy-canvas');
+            if (gCanvas) {
+                const gCtx = gCanvas.getContext('2d');
+                let stars = [];
+                const starCount = 280;
+                let targetWarp = 1;
+                let currentWarp = 1;
+                let lastScrollY = window.scrollY;
+
+                function resizeGalaxyCanvas() {
+                    const rect = gCanvas.parentElement.getBoundingClientRect();
+                    gCanvas.width = rect.width;
+                    gCanvas.height = rect.height;
+                }
+                window.addEventListener('resize', resizeGalaxyCanvas);
+                resizeGalaxyCanvas();
+                setTimeout(resizeGalaxyCanvas, 200);
+
+                class GalaxyStar {
+                    constructor() {
+                        this.reset();
+                        this.radius = Math.random() * Math.min(gCanvas.width, gCanvas.height) * 0.45;
+                        this.angle = Math.random() * Math.PI * 2;
+                    }
+
+                    reset() {
+                        this.radius = Math.random() * Math.min(gCanvas.width, gCanvas.height) * 0.45;
+                        this.angle = Math.random() * Math.PI * 2;
+                        this.speed = (Math.random() * 0.003 + 0.001);
+                        this.size = Math.random() * 1.5 + 0.6;
+                        
+                        const rand = Math.random();
+                        if (rand < 0.4) {
+                            this.color = 'rgba(0, 242, 255, ' + (Math.random() * 0.6 + 0.3) + ')';
+                        } else if (rand < 0.8) {
+                            this.color = 'rgba(217, 70, 239, ' + (Math.random() * 0.6 + 0.3) + ')';
+                        } else {
+                            this.color = 'rgba(255, 255, 255, ' + (Math.random() * 0.7 + 0.3) + ')';
+                        }
+                    }
+
+                    update(warp) {
+                        this.angle += this.speed * warp;
+                        this.radius += 0.08 * warp;
+                        
+                        const maxR = Math.max(gCanvas.width, gCanvas.height) * 0.5;
+                        if (this.radius > maxR) {
+                            this.radius = Math.random() * 15;
+                            this.angle = Math.random() * Math.PI * 2;
+                        }
+                    }
+
+                    draw(centerX, centerY) {
+                        const spiralOffset = Math.sin(this.radius * 0.015) * 1.4;
+                        const x = centerX + this.radius * Math.cos(this.angle + spiralOffset);
+                        const y = centerY + this.radius * Math.sin(this.angle + spiralOffset);
+
+                        gCtx.beginPath();
+                        gCtx.arc(x, y, this.size, 0, Math.PI * 2);
+                        gCtx.fillStyle = this.color;
+                        
+                        if (this.size > 1.2) {
+                            gCtx.shadowColor = this.color;
+                            gCtx.shadowBlur = 5;
+                        } else {
+                            gCtx.shadowBlur = 0;
+                        }
+                        
+                        gCtx.fill();
+                    }
+                }
+
+                for (let i = 0; i < starCount; i++) {
+                    stars.push(new GalaxyStar());
+                }
+
+                window.addEventListener('scroll', () => {
+                    const diff = Math.abs(window.scrollY - lastScrollY);
+                    lastScrollY = window.scrollY;
+                    targetWarp = 1 + Math.min(diff * 0.3, 15);
+                }, { passive: true });
+
+                function animateGalaxy() {
+                    gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+
+                    currentWarp += (targetWarp - currentWarp) * 0.08;
+                    targetWarp += (1 - targetWarp) * 0.05;
+
+                    const centerX = gCanvas.width / 2;
+                    const centerY = gCanvas.height / 2;
+
+                    const nebula = gCtx.createRadialGradient(centerX, centerY, 5, centerX, centerY, Math.min(gCanvas.width, gCanvas.height) * 0.4);
+                    nebula.addColorStop(0, 'rgba(188, 0, 221, 0.06)');
+                    nebula.addColorStop(0.5, 'rgba(0, 242, 255, 0.03)');
+                    nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    gCtx.fillStyle = nebula;
+                    gCtx.beginPath();
+                    gCtx.arc(centerX, centerY, Math.min(gCanvas.width, gCanvas.height) * 0.4, 0, Math.PI * 2);
+                    gCtx.fill();
+
+                    stars.forEach(star => {
+                        star.update(currentWarp);
+                        star.draw(centerX, centerY);
+                    });
+
+                    requestAnimationFrame(animateGalaxy);
+                }
+                animateGalaxy();
+            }
+
+            // --- NexLink 3D Phone Mockup Flipper Logic ---
+            const flipper = document.querySelector('.phone-flipper');
+            const toggleLanding = document.getElementById('toggle-landing');
+            const toggleProfile = document.getElementById('toggle-profile');
+            let isFlipped = false;
+            let autoFlipInterval;
+
+            function setFlippedState(flipped) {
+                isFlipped = flipped;
+                if (isFlipped) {
+                    flipper.classList.add('is-flipped');
+                    toggleLanding.classList.remove('active');
+                    toggleLanding.classList.remove('profile-active');
+                    toggleProfile.classList.add('active');
+                    toggleProfile.classList.add('profile-active');
+                } else {
+                    flipper.classList.remove('is-flipped');
+                    toggleLanding.classList.add('active');
+                    toggleLanding.classList.add('profile-active');
+                    toggleProfile.classList.remove('active');
+                    toggleProfile.classList.remove('profile-active');
+                }
+            }
+
+            function startAutoFlip() {
+                stopAutoFlip();
+                autoFlipInterval = setInterval(() => {
+                    setFlippedState(!isFlipped);
+                }, 4500);
+            }
+
+            function stopAutoFlip() {
+                if (autoFlipInterval) {
+                    clearInterval(autoFlipInterval);
+                }
+            }
+
+            if (flipper && toggleLanding && toggleProfile) {
+                toggleLanding.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopAutoFlip();
+                    setFlippedState(false);
+                    startAutoFlip();
+                });
+
+                toggleProfile.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopAutoFlip();
+                    setFlippedState(true);
+                    startAutoFlip();
+                });
+
+                flipper.addEventListener('click', () => {
+                    stopAutoFlip();
+                    setFlippedState(!isFlipped);
+                    startAutoFlip();
+                });
+
+                startAutoFlip();
+            }
+
+            // --- Link Shop 3D Phone Mockup Flipper Logic ---
+            const shopFlipper = document.querySelector('.shop-phone-flipper');
+            const toggleShopLanding = document.getElementById('toggle-shop-landing');
+            const toggleShopProfile = document.getElementById('toggle-shop-profile');
+            let isShopFlipped = false;
+            let autoShopFlipInterval;
+
+            function setShopFlippedState(flipped) {
+                isShopFlipped = flipped;
+                if (isShopFlipped) {
+                    shopFlipper.classList.add('is-flipped');
+                    toggleShopLanding.classList.remove('active');
+                    toggleShopLanding.classList.remove('profile-active');
+                    toggleShopProfile.classList.add('active');
+                    toggleShopProfile.classList.add('profile-active');
+                } else {
+                    shopFlipper.classList.remove('is-flipped');
+                    toggleShopLanding.classList.add('active');
+                    toggleShopLanding.classList.add('profile-active');
+                    toggleShopProfile.classList.remove('active');
+                    toggleShopProfile.classList.remove('profile-active');
+                }
+            }
+
+            function startShopAutoFlip() {
+                stopShopAutoFlip();
+                autoShopFlipInterval = setInterval(() => {
+                    setShopFlippedState(!isShopFlipped);
+                }, 4500);
+            }
+
+            function stopShopAutoFlip() {
+                if (autoShopFlipInterval) {
+                    clearInterval(autoShopFlipInterval);
+                }
+            }
+
+            if (shopFlipper && toggleShopLanding && toggleShopProfile) {
+                toggleShopLanding.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopShopAutoFlip();
+                    setShopFlippedState(false);
+                    startShopAutoFlip();
+                });
+
+                toggleShopProfile.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopShopAutoFlip();
+                    setShopFlippedState(true);
+                    startShopAutoFlip();
+                });
+
+                shopFlipper.addEventListener('click', () => {
+                    stopShopAutoFlip();
+                    setShopFlippedState(!isShopFlipped);
+                    startShopAutoFlip();
+                });
+
+                startShopAutoFlip();
+            }
+
+            // --- Web Builder & Hosting 3D Desktop Flipper Logic ---
+            const builderFlipper = document.querySelector('.builder-flipper');
+            const toggleBuilderDash = document.getElementById('toggle-builder-dash');
+            const toggleBuilderEdit = document.getElementById('toggle-builder-edit');
+            let isBuilderFlipped = false;
+            let autoBuilderFlipInterval;
+
+            function setBuilderFlippedState(flipped) {
+                isBuilderFlipped = flipped;
+                if (isBuilderFlipped) {
+                    builderFlipper.classList.add('is-flipped');
+                    toggleBuilderDash.classList.remove('active');
+                    toggleBuilderDash.classList.remove('profile-active');
+                    toggleBuilderEdit.classList.add('active');
+                    toggleBuilderEdit.classList.add('profile-active');
+                } else {
+                    builderFlipper.classList.remove('is-flipped');
+                    toggleBuilderDash.classList.add('active');
+                    toggleBuilderDash.classList.add('profile-active');
+                    toggleBuilderEdit.classList.remove('active');
+                    toggleBuilderEdit.classList.remove('profile-active');
+                }
+            }
+
+            function startBuilderAutoFlip() {
+                stopBuilderAutoFlip();
+                autoBuilderFlipInterval = setInterval(() => {
+                    setBuilderFlippedState(!isBuilderFlipped);
+                }, 4500);
+            }
+
+            function stopBuilderAutoFlip() {
+                if (autoBuilderFlipInterval) {
+                    clearInterval(autoBuilderFlipInterval);
+                }
+            }
+
+            if (builderFlipper && toggleBuilderDash && toggleBuilderEdit) {
+                toggleBuilderDash.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopBuilderAutoFlip();
+                    setBuilderFlippedState(false);
+                    startBuilderAutoFlip();
+                });
+
+                toggleBuilderEdit.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    stopBuilderAutoFlip();
+                    setBuilderFlippedState(true);
+                    startBuilderAutoFlip();
+                });
+
+                builderFlipper.addEventListener('click', () => {
+                    stopBuilderAutoFlip();
+                    setBuilderFlippedState(!isBuilderFlipped);
+                    startBuilderAutoFlip();
+                });
+
+                startBuilderAutoFlip();
+            }
+
+            // --- Membresia Laser Robots Background Canvas Animation ---
+            const mCanvas = document.getElementById('membresia-canvas');
+            if (mCanvas) {
+                const mCtx = mCanvas.getContext('2d');
+                let mRobots = [];
+                let mLasers = [];
+                let mParticles = [];
+                let nextLaserTime = 0;
+                
+                function resizeMembresiaCanvas() {
+                    const section = document.getElementById('membresia');
+                    if (section) {
+                        mCanvas.width = section.clientWidth;
+                        mCanvas.height = section.clientHeight;
+                    }
+                }
+                
+                window.addEventListener('resize', resizeMembresiaCanvas);
+                resizeMembresiaCanvas();
+                setTimeout(resizeMembresiaCanvas, 200);
+
+                class NeonRobot {
+                    constructor(x, side) {
+                        this.x = x;
+                        this.side = side;
+                        this.yOffset = Math.random() * Math.PI * 2;
+                        this.targetY = 0;
+                        this.currentY = 0;
+                        this.targetAngle = 0;
+                        this.currentAngle = 0;
+                        this.armLength = 25;
+                        this.isAiming = false;
+                        this.aimTimer = 0;
+                    }
+
+                    update(time) {
+                        // Flotación senoidal
+                        this.baseY = mCanvas.height / 2 + Math.sin(time * 0.0015 + this.yOffset) * 45;
+                        
+                        if (!this.isAiming) {
+                            this.targetAngle = this.side === 'left' ? 0 : Math.PI;
+                            this.currentY += (this.baseY - this.currentY) * 0.05;
+                        } else {
+                            this.currentY += (this.targetY - this.currentY) * 0.1;
+                            this.aimTimer--;
+                            if (this.aimTimer <= 0) {
+                                this.isAiming = false;
+                            }
+                        }
+
+                        // Rotación suave del brazo
+                        this.currentAngle += (this.targetAngle - this.currentAngle) * 0.1;
+                    }
+
+                    aimAt(y, angle) {
+                        this.targetY = y;
+                        this.targetAngle = angle;
+                        this.isAiming = true;
+                        this.aimTimer = 45; // fotogramas apuntando
+                    }
+
+                    draw() {
+                        mCtx.save();
+                        mCtx.translate(this.x, this.currentY);
+                        
+                        // Brillo neón
+                        mCtx.shadowBlur = 10;
+                        mCtx.shadowColor = this.side === 'left' ? '#00f2ff' : '#d4af37';
+                        mCtx.strokeStyle = this.side === 'left' ? '#00f2ff' : '#d4af37';
+                        mCtx.fillStyle = 'rgba(12, 12, 18, 0.95)';
+                        mCtx.lineWidth = 1.5;
+
+                        // --- Dibujar Cabeza del Robot ---
+                        mCtx.beginPath();
+                        mCtx.arc(0, -28, 9, 0, Math.PI * 2);
+                        mCtx.fill();
+                        mCtx.stroke();
+
+                        // Ojos brillantes
+                        mCtx.fillStyle = this.side === 'left' ? '#ffd700' : '#00f2ff';
+                        mCtx.shadowColor = mCtx.fillStyle;
+                        mCtx.shadowBlur = 8;
+                        mCtx.beginPath();
+                        if (this.side === 'left') {
+                            mCtx.arc(3, -29, 1.5, 0, Math.PI * 2);
+                        } else {
+                            mCtx.arc(-3, -29, 1.5, 0, Math.PI * 2);
+                        }
+                        mCtx.fill();
+
+                        // --- Dibujar Torso del Robot ---
+                        mCtx.strokeStyle = this.side === 'left' ? '#00f2ff' : '#d4af37';
+                        mCtx.shadowColor = mCtx.strokeStyle;
+                        mCtx.shadowBlur = 10;
+                        mCtx.fillStyle = 'rgba(12, 12, 18, 0.95)';
+                        mCtx.beginPath();
+                        mCtx.moveTo(-10, -18);
+                        mCtx.lineTo(10, -18);
+                        mCtx.lineTo(7, 10);
+                        mCtx.lineTo(-7, 10);
+                        mCtx.closePath();
+                        mCtx.fill();
+                        mCtx.stroke();
+
+                        // Líneas de circuito en el pecho
+                        mCtx.strokeStyle = this.side === 'left' ? 'rgba(0, 242, 255, 0.5)' : 'rgba(212, 175, 55, 0.5)';
+                        mCtx.lineWidth = 1;
+                        mCtx.beginPath();
+                        mCtx.moveTo(0, -10);
+                        mCtx.lineTo(0, 5);
+                        mCtx.moveTo(-4, -5);
+                        mCtx.lineTo(4, -5);
+                        mCtx.stroke();
+
+                        // Articulación del hombro
+                        mCtx.fillStyle = this.side === 'left' ? '#00f2ff' : '#d4af37';
+                        mCtx.strokeStyle = mCtx.fillStyle;
+                        mCtx.beginPath();
+                        const shoulderX = this.side === 'left' ? 7 : -7;
+                        mCtx.arc(shoulderX, -14, 3, 0, Math.PI * 2);
+                        mCtx.fill();
+
+                        // --- Dibujar Brazo que Dispara ---
+                        mCtx.save();
+                        mCtx.translate(shoulderX, -14);
+                        mCtx.rotate(this.currentAngle - (this.side === 'left' ? 0 : Math.PI));
+                        mCtx.strokeStyle = this.side === 'left' ? '#00f2ff' : '#d4af37';
+                        mCtx.lineWidth = 2;
+                        
+                        mCtx.beginPath();
+                        mCtx.moveTo(0, 0);
+                        mCtx.lineTo(this.armLength, 0);
+                        mCtx.stroke();
+
+                        // Cañón de plasma en la punta del brazo
+                        mCtx.fillStyle = '#ffffff';
+                        mCtx.shadowColor = '#ffffff';
+                        mCtx.shadowBlur = 12;
+                        mCtx.beginPath();
+                        mCtx.arc(this.armLength, 0, 3, 0, Math.PI * 2);
+                        mCtx.fill();
+                        
+                        mCtx.restore();
+                        mCtx.restore();
+                    }
+                }
+
+                // Inicializar 2 robots
+                mRobots.push(new NeonRobot(35, 'left'));
+                mRobots.push(new NeonRobot(mCanvas.width - 35, 'right'));
+
+                // Actualizar posiciones de los robots si el canvas cambia
+                function updateRobotHorizontalPositions() {
+                    if (mRobots.length >= 2) {
+                        mRobots[0].x = 35;
+                        mRobots[1].x = mCanvas.width - 35;
+                    }
+                }
+
+                class LaserBeam {
+                    constructor(startX, startY, endX, endY, color) {
+                        this.startX = startX;
+                        this.startY = startY;
+                        this.endX = endX;
+                        this.endY = endY;
+                        this.color = color;
+                        this.life = 18; // durará 18 fotogramas
+                        this.maxLife = 18;
+                    }
+
+                    draw() {
+                        const alpha = this.life / this.maxLife;
+                        mCtx.save();
+                        mCtx.shadowBlur = 20;
+                        mCtx.shadowColor = this.color;
+                        mCtx.strokeStyle = '#ffffff';
+                        mCtx.lineWidth = 3 * alpha;
+                        mCtx.beginPath();
+                        mCtx.moveTo(this.startX, this.startY);
+                        mCtx.lineTo(this.endX, this.endY);
+                        mCtx.stroke();
+
+                        mCtx.strokeStyle = this.color;
+                        mCtx.lineWidth = 6 * alpha;
+                        mCtx.beginPath();
+                        mCtx.moveTo(this.startX, this.startY);
+                        mCtx.lineTo(this.endX, this.endY);
+                        mCtx.stroke();
+                        mCtx.restore();
+                    }
+                }
+
+                class Spark {
+                    constructor(x, y, color) {
+                        this.x = x;
+                        this.y = y;
+                        this.color = color;
+                        this.vx = (Math.random() - 0.5) * 5;
+                        this.vy = (Math.random() - 0.5) * 5;
+                        this.life = Math.random() * 20 + 10;
+                        this.maxLife = this.life;
+                        this.size = Math.random() * 2 + 1;
+                    }
+
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+                        this.life--;
+                    }
+
+                    draw() {
+                        const alpha = this.life / this.maxLife;
+                        mCtx.save();
+                        mCtx.fillStyle = this.color;
+                        mCtx.shadowColor = this.color;
+                        mCtx.shadowBlur = 5;
+                        mCtx.globalAlpha = alpha;
+                        mCtx.beginPath();
+                        mCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        mCtx.fill();
+                        mCtx.restore();
+                    }
+                }
+
+                function animateMembresia(time) {
+                    // Limpiar canvas de frente
+                    mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+                    
+                    // Asegurar que las posiciones horizontales estén sincronizadas
+                    updateRobotHorizontalPositions();
+
+                    // Dibujar robots
+                    mRobots.forEach(robot => {
+                        robot.update(time);
+                        robot.draw();
+                    });
+
+                    // Lógica de disparo periódico de láser
+                    if (time > nextLaserTime) {
+                        // Buscar las filas de la tabla
+                        const rows = document.querySelectorAll('#membresia table tbody tr');
+                        if (rows.length > 0) {
+                            const rowIndex = Math.floor(Math.random() * rows.length);
+                            const selectedRow = rows[rowIndex];
+                            const rowRect = selectedRow.getBoundingClientRect();
+                            const canvasRect = mCanvas.getBoundingClientRect();
+                            
+                            // Coordenadas Y exactas de la fila en relación al canvas
+                            const targetY = rowRect.top - canvasRect.top + rowRect.height / 2;
+                            
+                            // Seleccionar un robot al azar
+                            const robotSide = Math.random() < 0.5 ? 0 : 1;
+                            const robot = mRobots[robotSide];
+                            
+                            const robotArmX = robot.side === 'left' ? robot.x + 7 : robot.x - 7;
+                            const robotArmY = robot.currentY - 14;
+                            
+                            // Calcular el extremo Y del láser e impactar
+                            const laserEndX = robot.side === 'left' ? rowRect.left - canvasRect.left + 5 : rowRect.right - canvasRect.left - 5;
+                            const laserColor = robot.side === 'left' ? '#00f2ff' : '#d4af37';
+                            
+                            // Calcular el ángulo hacia el objetivo
+                            const dx = laserEndX - robotArmX;
+                            const dy = targetY - robotArmY;
+                            const angle = Math.atan2(dy, dx);
+                            
+                            // Apuntar
+                            robot.aimAt(targetY + 14, angle);
+                            
+                            // Disparar láser tras apuntar (un pequeño delay simulado)
+                            setTimeout(() => {
+                                mLasers.push(new LaserBeam(robotArmX + Math.cos(angle) * robot.armLength, robotArmY + Math.sin(angle) * robot.armLength, laserEndX, targetY, laserColor));
+                                
+                                // Crear chispas de impacto
+                                for (let i = 0; i < 15; i++) {
+                                    mParticles.push(new Spark(laserEndX, targetY, laserColor));
+                                }
+
+                                // Brillar fila
+                                selectedRow.classList.add('row-laser-glow');
+                                setTimeout(() => {
+                                    selectedRow.classList.remove('row-laser-glow');
+                                }, 750);
+                            }, 100);
+                        }
+                        
+                        nextLaserTime = time + 2500 + Math.random() * 1500; // Siguiente en 2.5s - 4s
+                    }
+
+                    // Dibujar y actualizar láseres
+                    mLasers = mLasers.filter(laser => {
+                        laser.draw();
+                        laser.life--;
+                        return laser.life > 0;
+                    });
+
+                    // Dibujar y actualizar chispas
+                    mParticles = mParticles.filter(spark => {
+                        spark.update();
+                        spark.draw();
+                        return spark.life > 0;
+                    });
+
+                    requestAnimationFrame(animateMembresia);
+                }
+
+                // Empezar loop
+                requestAnimationFrame(animateMembresia);
+            }
+        });
+
+        // ─── Controles del Player de Video 9:16 (scope global para onclick) ─────
+
+            const mpv = document.getElementById('main-player-video');
+
+            function togglePlayPause() {
+                if (!mpv) return;
+                const icon = document.getElementById('play-icon');
+                if (mpv.paused) {
+                    mpv.play();
+                    icon.className = 'fa-solid fa-pause';
+                    icon.style.marginLeft = '0';
+                } else {
+                    mpv.pause();
+                    icon.className = 'fa-solid fa-play';
+                    icon.style.marginLeft = '2px';
+                }
+            }
+
+            function toggleMute() {
+                if (!mpv) return;
+                const icon = document.getElementById('mute-icon');
+                mpv.muted = !mpv.muted;
+                icon.className = mpv.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+            }
+
+            function setVolume(val) {
+                if (!mpv) return;
+                mpv.volume = parseFloat(val);
+                const icon = document.getElementById('mute-icon');
+                if (mpv.volume === 0) {
+                    icon.className = 'fa-solid fa-volume-xmark';
+                } else if (mpv.volume < 0.5) {
+                    icon.className = 'fa-solid fa-volume-low';
+                } else {
+                    icon.className = 'fa-solid fa-volume-high';
+                }
+            }
+
+            function toggleFullscreen() {
+                const shell = document.getElementById('video-player-shell');
+                if (!document.fullscreenElement) {
+                    shell.requestFullscreen && shell.requestFullscreen();
+                } else {
+                    document.exitFullscreen && document.exitFullscreen();
+                }
+            }
+
+            function formatTime(s) {
+                const m = Math.floor(s / 60);
+                const sec = Math.floor(s % 60);
+                return `${m}:${sec.toString().padStart(2, '0')}`;
+            }
+
+            if (mpv) {
+                // Set initial volume
+                mpv.volume = 0.8;
+
+                // Progress bar update
+                mpv.addEventListener('timeupdate', () => {
+                    const pct = mpv.duration ? (mpv.currentTime / mpv.duration) * 100 : 0;
+                    const pb = document.getElementById('progress-bar');
+                    if (pb) pb.style.width = pct + '%';
+                    const td = document.getElementById('time-display');
+                    if (td && mpv.duration) {
+                        td.textContent = `${formatTime(mpv.currentTime)} / ${formatTime(mpv.duration)}`;
+                    }
+                });
+
+                // Click on progress bar to seek
+                const pc = document.getElementById('progress-container');
+                if (pc) {
+                    pc.addEventListener('click', (e) => {
+                        const rect = pc.getBoundingClientRect();
+                        const ratio = (e.clientX - rect.left) / rect.width;
+                        if (mpv.duration) mpv.currentTime = ratio * mpv.duration;
+                    });
+                }
+
+                // Play on first interaction (browsers block autoplay with audio)
+                document.addEventListener('click', function startOnce() {
+                    if (mpv.paused) {
+                        mpv.play().catch(() => {});
+                        document.getElementById('play-icon').className = 'fa-solid fa-pause';
+                        document.getElementById('play-icon').style.marginLeft = '0';
+                    }
+                    document.removeEventListener('click', startOnce);
+                }, { once: true });
+            }
+
+            // ─── Canvas de Planetas Orbitando (Video Section) ─────────────────────
+            (function() {
+                const vpc = document.getElementById('video-planets-canvas');
+                if (!vpc) return;
+                const vCtx = vpc.getContext('2d');
+
+                function resizeVPC() {
+                    const sec = document.getElementById('video-presentacion');
+                    if (sec) {
+                        vpc.width = sec.clientWidth;
+                        vpc.height = sec.clientHeight;
+                    }
+                }
+                window.addEventListener('resize', resizeVPC);
+                resizeVPC();
+                setTimeout(resizeVPC, 300);
+
+                const vpMessages = [
+                    "SYSTEM: CORE_ON",
+                    "NEURAL_NET: RUNNING",
+                    "ZENTRY_CORE: ESTABLE",
+                    "QUANTUM: ACTIVE",
+                    "DATALINK: 0.1ms",
+                    "SYNC: 99.9%"
+                ];
+
+                class VPlanet {
+                    constructor(rx, ry, speed, size, color, msg, isCyan) {
+                        this.rx = rx; this.ry = ry;
+                        this.angle = Math.random() * Math.PI * 2;
+                        this.speed = speed; this.size = size;
+                        this.color = color; this.msg = msg;
+                        this.isCyan = isCyan;
+                        this.phase = Math.random() * Math.PI * 2;
+                    }
+                    update() { this.angle += this.speed; this.phase += 0.04; }
+                    draw(cx, cy) {
+                        const px = cx + this.rx * Math.cos(this.angle);
+                        const py = cy + this.ry * Math.sin(this.angle);
+
+                        // Órbita punteada
+                        vCtx.save();
+                        vCtx.beginPath();
+                        vCtx.ellipse(cx, cy, this.rx, this.ry, 0, 0, Math.PI * 2);
+                        vCtx.strokeStyle = this.isCyan ? 'rgba(0,242,255,0.07)' : 'rgba(212,175,55,0.07)';
+                        vCtx.setLineDash([3, 10]);
+                        vCtx.lineWidth = 1;
+                        vCtx.stroke();
+                        vCtx.restore();
+
+                        // Planeta
+                        vCtx.save();
+                        vCtx.shadowBlur = 10 + Math.sin(this.phase) * 4;
+                        vCtx.shadowColor = this.color;
+                        vCtx.fillStyle = this.color;
+                        vCtx.beginPath();
+                        vCtx.arc(px, py, this.size, 0, Math.PI * 2);
+                        vCtx.fill();
+                        // núcleo blanco
+                        vCtx.fillStyle = 'rgba(255,255,255,0.9)';
+                        vCtx.beginPath();
+                        vCtx.arc(px, py, this.size * 0.35, 0, Math.PI * 2);
+                        vCtx.fill();
+                        vCtx.restore();
+
+                        // Etiqueta telemetría
+                        const ex = px + 32, ey = py - 28;
+                        vCtx.save();
+                        vCtx.strokeStyle = this.isCyan ? 'rgba(0,242,255,0.3)' : 'rgba(212,175,55,0.3)';
+                        vCtx.setLineDash([2, 4]);
+                        vCtx.lineWidth = 1;
+                        vCtx.beginPath();
+                        vCtx.moveTo(px, py);
+                        vCtx.lineTo(ex, ey);
+                        vCtx.lineTo(ex + 12, ey);
+                        vCtx.stroke();
+                        vCtx.font = 'bold 8.5px monospace';
+                        vCtx.fillStyle = this.isCyan ? '#00f2ff' : '#ffd700';
+                        vCtx.shadowColor = vCtx.fillStyle;
+                        vCtx.shadowBlur = 4;
+                        vCtx.fillText(this.msg, ex + 16, ey + 3);
+                        vCtx.restore();
+                    }
+                }
+
+                const vPlanets = [
+                    new VPlanet(220, 70,  0.004, 6,  '#00f2ff', vpMessages[0], true),
+                    new VPlanet(320, 100, 0.0028, 8, '#ffd700', vpMessages[1], false),
+                    new VPlanet(420, 130, 0.002, 9,  '#bc00dd', vpMessages[2], true),
+                    new VPlanet(520, 160, 0.0015, 7, '#00f2ff', vpMessages[3], true),
+                    new VPlanet(180, 55,  0.006, 5,  '#ffd700', vpMessages[4], false),
+                    new VPlanet(380, 115, 0.0022, 7, '#00f2ff', vpMessages[5], true),
+                ];
+
+                function animateVPlanets() {
+                    vCtx.clearRect(0, 0, vpc.width, vpc.height);
+                    const cx = vpc.width / 2;
+                    const cy = vpc.height * 0.48;
+
+                    // Nodo central pulsante
+                    const cp = 14 + Math.sin(Date.now() * 0.003) * 3;
+                    vCtx.save();
+                    vCtx.shadowBlur = cp * 2;
+                    vCtx.shadowColor = '#00f2ff';
+                    vCtx.fillStyle = 'rgba(0,242,255,0.05)';
+                    vCtx.beginPath();
+                    vCtx.arc(cx, cy, cp * 2.2, 0, Math.PI * 2);
+                    vCtx.fill();
+                    vCtx.strokeStyle = 'rgba(0,242,255,0.2)';
+                    vCtx.lineWidth = 1;
+                    vCtx.stroke();
+                    vCtx.restore();
+
+                    vPlanets.forEach(p => { p.update(); p.draw(cx, cy); });
+                    requestAnimationFrame(animateVPlanets);
+                }
+                animateVPlanets();
+            })();
+        </script>
+    </body>
+</html>
